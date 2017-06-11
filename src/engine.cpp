@@ -1,8 +1,8 @@
 //=============================================================================
 // engine.cpp
 //
-//    Compute the boomerang statistic for each measured location using a
-//    simple linear variogram model.
+//    Compute the boomerang statistic for each measured location using the
+//    user-specified semi-variogram model.
 //
 // author:
 //    Dr. Randal J. Barnes
@@ -12,15 +12,15 @@
 // version:
 //    11 June 2017
 //=============================================================================
+#include <cassert>
+#include <iomanip>
+#include <math.h>
+#include <numeric>
+
 #include "engine.h"
-#include "special_functions.h"
 #include "matrix.h"
 #include "linear_systems.h"
-
-#include <numeric>
-#include <math.h>
-#include <iomanip>
-#include <cassert>
+#include "special_functions.h"
 
 //=============================================================================
 //
@@ -29,14 +29,15 @@ std::vector<Boomerang> Engine(
    const std::vector<double>x,
    const std::vector<double>y,
    const std::vector<double>z,
+   double nugget,
+   double sill,
+   double range,
    double radius )
 {
    // Manifest constants.
    const int MINIMUM_COUNT = 10;
    const int N = x.size();     // number of observations.
-   assert( N>1 );
-
-   std::vector<Boomerang> results(N);
+   assert(N > 1);
 
    // Pre-compute the separation distance matrix for all of the observations.
    Matrix D(N, N);
@@ -49,15 +50,23 @@ std::vector<Boomerang> Engine(
       }
    }
 
-   Matrix Z(N, 1);
-   Matrix Xi(N, 1);
+   // Pre-compute the covariance matrix for all of the observations.
+   Matrix C(N, N, sill);
+   for( int i=0; i<N-1; ++i )
+   {
+      for( int j=i+1; j<N; ++j )
+      {
+         C(i,j) = (sill-nugget)*exp(-3.0*D(i,j)/range);
+         C(j,i) = C(i,j);
+      }
+   }
 
-   for( int k=0; k<N; ++k )
-      Z(k,0) = z[k];
-
-   double lambda = MaxAbs(D);
+   // Create the matrix of observed values.
+   Matrix ZZ(z);
 
    // Pass through the set of observations one at a time.
+   std::vector<Boomerang> results(N);
+
    for( int k=0; k<N; ++k )
    {
       // Determine the active subset of the observations for the location of
@@ -81,61 +90,56 @@ std::vector<Boomerang> Engine(
       if( M < MINIMUM_COUNT )
       {
          results[k].zhat   = NAN;
+         results[k].kstd   = NAN;
          results[k].zeta   = NAN;
          results[k].pvalue = NAN;
          results[k].cnt    = 0;
          continue;
       }
 
-      // Setup the Ordinary Kriging system for the location of observation [k].
-      Matrix A, B;
-      Slice(D, active, active, A);
-      Subtract_aM(lambda, A, B);
+      // Setup the Ordinary Kriging system for the location of observation [k]
+      // using only the active data.
+      Matrix A;
+      Slice(C, active, active, A);
 
-      Matrix b, c;
-      Slice(D, active, current, b);
-      Subtract_aM(lambda, b, c);
+      Matrix b;
+      Slice(C, active, current, b);
 
-      Matrix zactive;
-      Slice(Z, active, first, zactive);
+      Matrix Z;
+      Slice(ZZ, active, first, Z);
 
       // Solve the Ordinary Kriging system.
-      Matrix L, u, v, bv, w;
+      Matrix L, u, v, lv, w;
       Matrix ones(M, 1, 1.0);
 
-      if( CholeskyDecomposition(B,L) )
+      if( CholeskyDecomposition(A,L) )
       {
-         CholeskySolve(L,c,u);
+         CholeskySolve(L,b,u);
          CholeskySolve(L,ones,v);
 
-         double beta = ( Sum(u) - 1 ) / Sum(v);
+         double lambda = ( Sum(u) - 1 ) / Sum(v);
 
-         Multiply_aM( beta, v, bv );
-         Subtract_MM( u, bv, w );
+         Multiply_aM( lambda, v, lv );
+         Subtract_MM( u, lv, w );
 
-         double zhat = DotProduct(w,zactive);
-         double tau2 = lambda - DotProduct(c,w) - beta;
-         Xi(k,0) = ( z[k]-zhat ) / sqrt(tau2);
+         double zhat = DotProduct(w,Z);
+         double kstd = sqrt( sill - DotProduct(b,w) - lambda );
 
          results[k].zhat = zhat;
+         results[k].kstd = kstd;
+         results[k].zeta = (z[k]-zhat) / kstd;
+
+         if( results[k].zeta < 0 )
+            results[k].pvalue = GaussianCDF(results[k].zeta);
+         else
+            results[k].pvalue = 1 - GaussianCDF(results[k].zeta);
+
          results[k].cnt  = M;
       }
       else
       {
          std::cerr << "WARNING: Cholesky Decompositon failed " << k << std::endl;
       }
-   }
-
-   // Normalize the xi to account for the unknown variogram slope.
-   double stdXi = sqrt( DotProduct(Xi, Xi) / N );
-   for( int k=0; k<N; ++k)
-   {
-      results[k].zeta = Xi(k,0)/stdXi;
-
-      if( results[k].zeta < 0 )
-         results[k].pvalue = GaussianCDF(results[k].zeta);
-      else
-         results[k].pvalue = 1 - GaussianCDF(results[k].zeta);
    }
    return results;
 }

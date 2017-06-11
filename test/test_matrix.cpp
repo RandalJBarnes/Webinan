@@ -17,10 +17,10 @@
 // version:
 //    11 June 2017
 //=============================================================================
-#include "test_matrix.h"
-
-#include <utility>
 #include <iomanip>
+#include <utility>
+
+#include "test_matrix.h"
 #include "unit_test.h"
 #include "..\src\matrix.h"
 
@@ -53,6 +53,19 @@ namespace{
    {
       Matrix A("1,2,3;4,5,6");
       Matrix B( A );
+
+      return CHECK( isClose(A, B, TOLERANCE) );
+   }
+
+
+   //--------------------------------------------------------------------------
+   // TestMatrixCopyConstructor
+   //--------------------------------------------------------------------------
+   bool TestMatrixConstructorFromVector()
+   {
+      Matrix A("1;2;3;4;5;6");
+      std::vector<double> v = {1.0, 2.0, 3.0, 4.0, 5.0, 6.0};
+      Matrix B( v );
 
       return CHECK( isClose(A, B, TOLERANCE) );
    }
@@ -633,6 +646,7 @@ std::pair<int,int> test_Matrix()
 
    TALLY( TestMatrixNullConstructor() );
    TALLY( TestMatrixCopyConstructor() );
+   TALLY( TestMatrixConstructorFromVector() );
    TALLY( TestMatrixDimensionedConstructor() );
    TALLY( TestMatrixConstructorWithScalarFill() );
    TALLY( TestMatrixConstructorWithArrayFill() );

@@ -13,18 +13,17 @@
 // version:
 //    11 June 2017
 //=============================================================================
-#include "matrix.h"
-
+#include <algorithm>
 #include <cassert>
 #include <cmath>
 #include <cstring>
-#include <iostream>
 #include <iomanip>
+#include <iostream>
+#include <numeric>
 #include <sstream>
 #include <vector>
-#include <algorithm>
-#include <numeric>
 
+#include "matrix.h"
 #include "sum_product-inl.h"
 
 //=============================================================================
@@ -55,6 +54,25 @@ Matrix::Matrix( const Matrix& A )
       m_nCols = A.nCols();
       m_Data  = new double[ m_nRows*m_nCols ];
       memcpy( m_Data, A.Base(), sizeof(double)*m_nRows*m_nCols );
+   }
+}
+
+//-----------------------------------------------------------------------------
+// constructor from an std:vector
+//-----------------------------------------------------------------------------
+Matrix::Matrix( const std::vector<double>v )
+:  m_nRows( 0 ),
+   m_nCols( 0 ),
+   m_Data( nullptr )
+{
+   if ( v.size() > 0 )
+   {
+      m_nRows = v.size();
+      m_nCols = 1;
+      m_Data  = new double[ m_nRows ];
+
+      for( int k=0; k<m_nRows; ++k )
+         m_Data[k] = v[k];
    }
 }
 
@@ -370,19 +388,14 @@ double* Matrix::end()
 //-----------------------------------------------------------------------------
 std::ostream& operator <<( std::ostream& ostr, const Matrix& A )
 {
-   using namespace std;
-
-   // Get the current settings.
-   streamsize mywidth = ostr.width();
-
    // Output the Matrix.
    for (int i=0; i<A.nRows(); ++i)
    {
       for (int j=0; j<A.nCols(); ++j)
       {
-         ostr << setw(mywidth) << A(i,j);
+         ostr << std::fixed << std::setw(12) << std::setprecision(3) << A(i,j);
       }
-      ostr << endl;
+      ostr << std::endl;
    }
 
    return ostr;

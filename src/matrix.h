@@ -24,7 +24,7 @@ public:
    // Life cycle
    Matrix();                                          // null constructor
    Matrix( const Matrix& A );                         // copy constructor
-   Matrix( const Matrix& A, const std::vector<int>& row_flag, const std::vector<int>& col_flag );  // slice constructor
+   Matrix( const std::vector<double>v );              // constructor w/ std:vector
 
    Matrix( int nrows, int ncols );                    // dimensioned constructor
    Matrix( int nrows, int ncols, double a );          // constructor w/ scalar fill

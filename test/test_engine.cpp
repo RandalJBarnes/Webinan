@@ -9,9 +9,9 @@
 // version:
 //    11 June 2017
 //=============================================================================
-#include "test_engine.h"
-
 #include <utility>
+
+#include "test_engine.h"
 #include "unit_test.h"
 #include "..\src\engine.h"
 

@@ -15,12 +15,11 @@
 // version:
 //    11 June 2017
 //=============================================================================
-#include "special_functions.h"
-
 #include <cassert>
 #include <cmath>
 
 #include "numerical_constants.h"
+#include "special_functions.h"
 
 //-----------------------------------------------------------------------------
 // Beta

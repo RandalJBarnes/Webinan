@@ -9,8 +9,8 @@
 // version:
 //    11 June 2017
 //=============================================================================
-#ifndef AAKOZI_ENGINE_H
-#define AAKOZI_ENGINE_H
+#ifndef ENGINE_H
+#define ENGINE_H
 
 #include <vector>
 
@@ -19,15 +19,23 @@
 //=============================================================================
 struct Boomerang
 {
-   double   zhat;
-   double   zeta;
-   double   pvalue;
-   int      cnt;
+   double zhat;
+   double kstd;
+   double zeta;
+   double pvalue;
+   int    cnt;
 };
 
 //=============================================================================
-std::vector<Boomerang> Engine( const std::vector<double>x, const std::vector<double>y, const std::vector<double>z, double radius );
+std::vector<Boomerang> Engine(
+   const std::vector<double>x,
+   const std::vector<double>y,
+   const std::vector<double>z,
+   double nugget,
+   double sill,
+   double range,
+   double radius );
 
 
 //=============================================================================
-#endif  // AAKOZI_ENGINE_H
+#endif  // ENGINE_H

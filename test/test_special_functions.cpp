@@ -9,10 +9,10 @@
 // version:
 //    11 June 2017
 //=============================================================================
-#include "test_special_functions.h"
-
 #include <cassert>
 #include <cmath>
+
+#include "test_special_functions.h"
 #include "unit_test.h"
 #include "..\src\special_functions.h"
 

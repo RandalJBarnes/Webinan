@@ -9,9 +9,9 @@
 // version:
 //    11 June 2017
 //=============================================================================
-#include "test_linear_systems.h"
-
 #include <utility>
+
+#include "test_linear_systems.h"
 #include "unit_test.h"
 #include "..\src\linear_systems.h"
 

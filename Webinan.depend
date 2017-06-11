@@ -1,0 +1,132 @@
+# depslib dependency file v1.0
+1497209648 source:c:\users\randal\google drive\projects\webinan\src\engine.cpp
+	"engine.h"
+	"special_functions.h"
+	"matrix.h"
+	"linear_systems.h"
+	<numeric>
+	<math.h>
+	<iomanip>
+	<cassert>
+
+1497201284 c:\users\randal\google drive\projects\webinan\src\engine.h
+	<vector>
+
+1497201284 c:\users\randal\google drive\projects\webinan\src\special_functions.h
+	<iostream>
+
+1497203059 c:\users\randal\google drive\projects\webinan\src\matrix.h
+	<iostream>
+	<vector>
+
+1497201283 c:\users\randal\google drive\projects\webinan\src\linear_systems.h
+	"matrix.h"
+
+1497201283 source:c:\users\randal\google drive\projects\webinan\src\linear_systems.cpp
+	"linear_systems.h"
+	<cassert>
+	<cmath>
+	"sum_product-inl.h"
+
+1497201284 c:\users\randal\google drive\projects\webinan\src\sum_product-inl.h
+
+1497206702 source:c:\users\randal\google drive\projects\webinan\src\matrix.cpp
+	"matrix.h"
+	<cassert>
+	<cmath>
+	<cstring>
+	<iostream>
+	<iomanip>
+	<sstream>
+	<vector>
+	<algorithm>
+	<numeric>
+	"sum_product-inl.h"
+
+1497201284 source:c:\users\randal\google drive\projects\webinan\src\now.cpp
+	"now.h"
+	<ctime>
+	<string>
+
+1497201283 c:\users\randal\google drive\projects\webinan\src\now.h
+	<string>
+
+1497201284 source:c:\users\randal\google drive\projects\webinan\src\special_functions.cpp
+	"special_functions.h"
+	<cassert>
+	<cmath>
+	"numerical_constants.h"
+
+1497201284 c:\users\randal\google drive\projects\webinan\src\numerical_constants.h
+	<limits>
+
+1497201284 source:c:\users\randal\google drive\projects\webinan\src\version.cpp
+	"version.h"
+
+1497201284 c:\users\randal\google drive\projects\webinan\src\version.h
+	<string>
+
+1497201284 source:c:\users\randal\google drive\projects\webinan\test\test_engine.cpp
+	"test_engine.h"
+	<utility>
+	"unit_test.h"
+	"..\src\engine.h"
+
+1497201284 c:\users\randal\google drive\projects\webinan\test\test_engine.h
+	<utility>
+
+1497201283 c:\users\randal\google drive\projects\webinan\test\unit_test.h
+
+1497201284 source:c:\users\randal\google drive\projects\webinan\test\test_linear_systems.cpp
+	"test_linear_systems.h"
+	<utility>
+	"unit_test.h"
+	"..\src\linear_systems.h"
+
+1497201284 c:\users\randal\google drive\projects\webinan\test\test_linear_systems.h
+	<utility>
+
+1497201284 source:c:\users\randal\google drive\projects\webinan\test\test_main.cpp
+	<iostream>
+	"test_engine.h"
+	"test_linear_systems.h"
+	"test_matrix.h"
+	"test_special_functions.h"
+
+1497201284 c:\users\randal\google drive\projects\webinan\test\test_matrix.h
+	<utility>
+
+1497201283 c:\users\randal\google drive\projects\webinan\test\test_special_functions.h
+	<utility>
+
+1497201284 source:c:\users\randal\google drive\projects\webinan\test\test_matrix.cpp
+	"test_matrix.h"
+	<utility>
+	<iomanip>
+	"unit_test.h"
+	"..\src\matrix.h"
+
+1497201283 source:c:\users\randal\google drive\projects\webinan\test\test_special_functions.cpp
+	"test_special_functions.h"
+	<cassert>
+	<cmath>
+	"unit_test.h"
+	"..\src\special_functions.h"
+
+1497201283 source:c:\users\randal\google drive\projects\webinan\test\unit_test.cpp
+	<iostream>
+
+1497215746 source:c:\users\randal\google drive\projects\webinan\src\main.cpp
+	<vector>
+	<set>
+	<ctime>
+	<fstream>
+	<iostream>
+	<sstream>
+	<iomanip>
+	<string>
+	<time.h>
+	"engine.h"
+	"version.h"
+	"now.h"
+

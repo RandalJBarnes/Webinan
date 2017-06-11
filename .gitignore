@@ -1,0 +1,13 @@
+bin/
+obj/
+data/
+doc/
+notes/
+
+*.log
+
+# MikTeX/LaTeX intermediate files
+*.aux
+*.bbl
+*.blg
+*.synctex

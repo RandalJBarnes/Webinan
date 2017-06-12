@@ -139,6 +139,7 @@ std::vector<Boomerang> Engine(
       else
       {
          std::cerr << "WARNING: Cholesky Decompositon failed " << k << std::endl;
+         exit(5);
       }
    }
    return results;

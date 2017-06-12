@@ -11,6 +11,7 @@
 // version:
 //    11 June 2017
 //=============================================================================
+#include <cstring>
 #include <fstream>
 #include <iomanip>
 #include <iostream>
@@ -30,8 +31,52 @@ namespace{
    void Usage()
    {
       std::cerr << std::endl;
-      std::cerr << "Webinan (" << Version() << ')'      << std::endl;
-      std::cerr << "Usage: Webinan <nugget> <sill> <range> <radius> <filename>" << std::endl;
+      std::cerr << "Usage:" << std::endl;
+      std::cerr << "   Webinan <nugget> <sill> <range> <radius> <filename>" << std::endl;
+      std::cerr << std::endl;
+   }
+
+   //--------------------------------------------------------------------------
+   //
+   //--------------------------------------------------------------------------
+   void PrintVersion()
+   {
+      std::cerr << std::endl;
+      std::cerr << "Webinan (" << Version() << ")" << std::endl;
+      std::cerr << std::endl;
+   }
+
+   //--------------------------------------------------------------------------
+   //
+   //--------------------------------------------------------------------------
+   void Help()
+   {
+      Usage();
+      std::cerr << std::endl;
+      std::cerr << "Arguments" << std::endl;
+      std::cerr << "   <nugget>        " << std::endl;
+      std::cerr << "   <sill>          semivariogram sill [z^2]" << std::endl;
+      std::cerr << "   <range>         " << std::endl;
+      std::cerr << "   <radius>        " << std::endl;
+      std::cerr << "   <filename>     " << std::endl;
+      std::cerr << std::endl;
+      std::cerr << "Output" << std::endl;
+      std::cerr << "   <Well_ID>       " << std::endl;
+      std::cerr << "   <X>             " << std::endl;
+      std::cerr << "   <Y>             " << std::endl;
+      std::cerr << "   <Z>             " << std::endl;
+      std::cerr << "   <Count>         " << std::endl;
+      std::cerr << "   <Zhat>          " << std::endl;
+      std::cerr << "   <Kstd>          " << std::endl;
+      std::cerr << "   <Zeta>          " << std::endl;
+      std::cerr << "   <pValue>        " << std::endl;
+      std::cerr << std::endl;
+      std::cerr << "Example" << std::endl;
+      std::cerr << "   Webinan 2 15 2500 100 Input.txt" << std::endl;
+      std::cerr << std::endl;
+      std::cerr << "Authors" << std::endl;
+      std::cerr << std::endl;
+      std::cerr << "Copyright" << std::endl;
       std::cerr << std::endl;
    }
 
@@ -42,6 +87,9 @@ namespace{
    {
       ost << "================================================="  << std::endl;
       ost << "Webinan                      (" << Version() << ')' << std::endl;
+      ost                                                         << std::endl;
+      ost << "R. Barnes, University of Minnesota               "  << std::endl;
+      ost << "R. Soule,  Minnesota Department of Health        "  << std::endl;
       ost << "================================================="  << std::endl;
    }
 }
@@ -53,14 +101,30 @@ namespace{
 int main(int argc, char* argv[])
 {
    // Check the command line.
-   if( argc != 6 )
+   if( argc == 1 )
    {
       Usage();
-      return 1;
+      return 0;
+   }
+   else if( argc == 2 )
+   {
+      if( strcmp(argv[1], "--help") == 0 )
+         Help();
+      else if( strcmp(argv[1], "--version") == 0 )
+         PrintVersion();
+      else
+         Usage();
+
+      return 0;
+   }
+   else if( argc == 6 )
+   {
+      Banner( std::cout );
    }
    else
    {
-      Banner( std::cout );
+      Usage();
+      return 1;
    }
 
    // Get and check the semi-variogram nugget effect.
@@ -152,20 +216,21 @@ int main(int argc, char* argv[])
    // Fill the output file with the results.
    std::vector<Boomerang> results = Engine(x, y, z, nugget, sill, range, radius);
 
+   outfile << "     Well_ID           X           Y           Z       Count        Zhat        Kstd        Zeta      pValue" << std::endl;
    for( int n=1; n<N; ++n )
    {
       outfile << std::fixed << std::setw(12)                         << id[n];
-      outfile << std::fixed << std::setw(12) << std::setprecision(2) << x[n];
-      outfile << std::fixed << std::setw(12) << std::setprecision(2) << y[n];
+      outfile << std::fixed << std::setw(12) << std::setprecision(0) << x[n];
+      outfile << std::fixed << std::setw(12) << std::setprecision(0) << y[n];
       outfile << std::fixed << std::setw(12) << std::setprecision(2) << z[n];
+      outfile << std::fixed << std::setw(12)                         << results[n].cnt;
       outfile << std::fixed << std::setw(12) << std::setprecision(2) << results[n].zhat;
       outfile << std::fixed << std::setw(12) << std::setprecision(2) << results[n].kstd;
       outfile << std::fixed << std::setw(12) << std::setprecision(2) << results[n].zeta;
       outfile << std::fixed << std::setw(12) << std::setprecision(3) << results[n].pvalue;
-      outfile << std::fixed << std::setw(12)                         << results[n].cnt;
       outfile << std::endl;
    }
-   inpfile.close();
+   outfile.close();
 
    // Successful termination.
    double elapsed = static_cast<double>(clock())/CLOCKS_PER_SEC;

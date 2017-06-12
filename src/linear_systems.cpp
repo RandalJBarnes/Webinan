@@ -14,7 +14,7 @@
 //    University of Minnesota
 //
 // version:
-//    11 June 2017
+//    12 June 2017
 //=============================================================================
 #include "linear_systems.h"
 

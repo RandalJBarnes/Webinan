@@ -9,13 +9,15 @@
 //    University of Minnesota
 //
 // version:
-//    11 June 2017
+//    12 June 2017
 //=============================================================================
+#include <algorithm>
 #include <cstring>
 #include <fstream>
 #include <iomanip>
 #include <iostream>
 #include <limits>
+#include <string>
 #include <vector>
 
 #include "engine.h"
@@ -24,79 +26,6 @@
 #include "version.h"
 
 
-namespace{
-   //--------------------------------------------------------------------------
-   //
-   //--------------------------------------------------------------------------
-   void Usage()
-   {
-      std::cerr << std::endl;
-      std::cerr << "Usage:" << std::endl;
-      std::cerr << "   Webinan <nugget> <sill> <range> <radius> <filename>" << std::endl;
-      std::cerr << std::endl;
-   }
-
-   //--------------------------------------------------------------------------
-   //
-   //--------------------------------------------------------------------------
-   void PrintVersion()
-   {
-      std::cerr << std::endl;
-      std::cerr << "Webinan (" << Version() << ")" << std::endl;
-      std::cerr << std::endl;
-   }
-
-   //--------------------------------------------------------------------------
-   //
-   //--------------------------------------------------------------------------
-   void Help()
-   {
-      Usage();
-      std::cerr << std::endl;
-      std::cerr << "Arguments" << std::endl;
-      std::cerr << "   <nugget>        " << std::endl;
-      std::cerr << "   <sill>          semivariogram sill [z^2]" << std::endl;
-      std::cerr << "   <range>         " << std::endl;
-      std::cerr << "   <radius>        " << std::endl;
-      std::cerr << "   <filename>     " << std::endl;
-      std::cerr << std::endl;
-      std::cerr << "Output" << std::endl;
-      std::cerr << "   <Well_ID>       " << std::endl;
-      std::cerr << "   <X>             " << std::endl;
-      std::cerr << "   <Y>             " << std::endl;
-      std::cerr << "   <Z>             " << std::endl;
-      std::cerr << "   <Count>         " << std::endl;
-      std::cerr << "   <Zhat>          " << std::endl;
-      std::cerr << "   <Kstd>          " << std::endl;
-      std::cerr << "   <Zeta>          " << std::endl;
-      std::cerr << "   <pValue>        " << std::endl;
-      std::cerr << std::endl;
-      std::cerr << "Example" << std::endl;
-      std::cerr << "   Webinan 2 15 2500 100 Input.txt" << std::endl;
-      std::cerr << std::endl;
-      std::cerr << "Authors" << std::endl;
-      std::cerr << std::endl;
-      std::cerr << "Copyright" << std::endl;
-      std::cerr << std::endl;
-   }
-
-   //--------------------------------------------------------------------------
-   //
-   //--------------------------------------------------------------------------
-   void Banner( std::ostream& ost)
-   {
-      ost << "================================================="  << std::endl;
-      ost << "Webinan                      (" << Version() << ')' << std::endl;
-      ost                                                         << std::endl;
-      ost << "R. Barnes, University of Minnesota               "  << std::endl;
-      ost << "R. Soule,  Minnesota Department of Health        "  << std::endl;
-      ost << "================================================="  << std::endl;
-   }
-}
-
-
-//-----------------------------------------------------------------------------
-//
 //-----------------------------------------------------------------------------
 int main(int argc, char* argv[])
 {
@@ -111,13 +40,13 @@ int main(int argc, char* argv[])
       if( strcmp(argv[1], "--help") == 0 )
          Help();
       else if( strcmp(argv[1], "--version") == 0 )
-         PrintVersion();
+         Version();
       else
          Usage();
 
       return 0;
    }
-   else if( argc == 6 )
+   else if( argc == 7 )
    {
       Banner( std::cout );
    }
@@ -159,9 +88,9 @@ int main(int argc, char* argv[])
 
    // Get and check the buffer radius.
    double radius = atof( argv[4] );
-   if( radius <= EPS )
+   if( radius < 0 )
    {
-      std::cerr << "ERROR: buffer radius = " << argv[4] << " is not valid;  0 < radius." << std::endl;
+      std::cerr << "ERROR: buffer radius = " << argv[4] << " is not valid;  0 <= radius." << std::endl;
       std::cerr << std::endl;
       Usage();
       return 2;
@@ -178,7 +107,7 @@ int main(int argc, char* argv[])
    }
 
    // Open the specified output file.
-   std::string outfilename = "Webinan.out";
+   std::string outfilename = argv[6];
    std::ofstream outfile( outfilename );
    if( outfile.fail() )
    {
@@ -199,6 +128,8 @@ int main(int argc, char* argv[])
    int ii;
    while( std::getline(inpfile, line) )
    {
+      std::replace( line.begin(), line.end(), ',', ' ' );
+
       std::istringstream is(line);
       if( is >> ii >> xx >> yy >> zz )
       {
@@ -211,7 +142,7 @@ int main(int argc, char* argv[])
    inpfile.close();
 
    int N = x.size();
-   std::cout << std::endl << N << " data records read from <" << argv[1] << ">. \n";
+   std::cout << N << " data records read from <" << inpfilename << ">." << std::endl;
 
    // Fill the output file with the results.
    std::vector<Boomerang> results = Engine(x, y, z, nugget, sill, range, radius);
@@ -231,10 +162,12 @@ int main(int argc, char* argv[])
       outfile << std::endl;
    }
    outfile.close();
+   std::cout << "Output file <" << outfilename << "> created. " << std::endl;
 
    // Successful termination.
    double elapsed = static_cast<double>(clock())/CLOCKS_PER_SEC;
-   std::cout << std::endl << "elapsed time: " << std::fixed << elapsed << " seconds." << std::endl;
+   std::cout << "elapsed time: " << std::fixed << elapsed << " seconds." << std::endl;
+   std::cout << std::endl;
 
    // Terminate execution.
 	return 0;

@@ -7,14 +7,17 @@
 //    University of Minnesota
 //
 // version:
-//    11 June 2017
+//    12 June 2017
 //=============================================================================
 #ifndef VERSION_H
 #define VERSION_H
 
 #include <string>
 
-std::string Version();
+void Banner( std::ostream& ost);
+void Help();
+void Usage();
+void Version();
 
 
 //=============================================================================

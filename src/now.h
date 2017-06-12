@@ -7,7 +7,7 @@
 //    University of Minnesota
 //
 // version:
-//    11 June 2017
+//    12 June 2017
 //=============================================================================
 #ifndef NOW_H
 #define NOW_H

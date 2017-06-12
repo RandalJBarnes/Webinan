@@ -7,7 +7,7 @@
 //    University of Minnesota
 //
 // version:
-//    11 June 2017
+//    12 June 2017
 //=============================================================================
 #ifndef TEST_SPECIAL_FUNCTIONS_H
 #define TEST_SPECIAL_FUNCTIONS_H

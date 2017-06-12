@@ -10,7 +10,7 @@
 //    University of Minnesota
 //
 // version:
-//    11 June 2017
+//    12 June 2017
 //=============================================================================
 #include <cassert>
 #include <iomanip>
@@ -80,13 +80,14 @@ std::vector<Boomerang> Engine(
       std::vector<int> active(N);
       for( int j=0; j<N; ++j)
       {
-         if( D(k,j) > radius )
+         if( D(k,j) >= radius )
             active[j] = 1;
          else
             active[j] = 0;
       }
-      int M = std::accumulate(active.begin(), active.end(), int(0));
+      active[k] = 0;
 
+      int M = std::accumulate(active.begin(), active.end(), int(0));
       if( M < MINIMUM_COUNT )
       {
          results[k].zhat   = NAN;
@@ -138,7 +139,7 @@ std::vector<Boomerang> Engine(
       }
       else
       {
-         std::cerr << "WARNING: Cholesky Decompositon failed " << k << std::endl;
+         std::cerr << "ERROR: Cholesky Decompositon failed " << k << std::endl;
          exit(5);
       }
    }

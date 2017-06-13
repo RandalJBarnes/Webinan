@@ -9,7 +9,7 @@
 //    University of Minnesota
 //
 // version:
-//    12 June 2017
+//    13 June 2017
 //=============================================================================
 #include <algorithm>
 #include <cstring>
@@ -123,9 +123,9 @@ int main(int argc, char* argv[])
    std::vector<double> z;
 
    std::string line;
-
-   double xx, yy, zz;
    int ii;
+   double xx, yy, zz;
+
    while( std::getline(inpfile, line) )
    {
       std::replace( line.begin(), line.end(), ',', ' ' );
@@ -138,16 +138,45 @@ int main(int argc, char* argv[])
          y.push_back(yy);
          z.push_back(zz);
       }
+      else
+      {
+         std::cerr << "ERROR -- reading the observation data failed on line "
+            << z.size()+1 << " of file " << inpfilename << "." << std::endl;
+         inpfile.close();
+         outfile.close();
+         return 5;
+      }
    }
    inpfile.close();
 
    int N = x.size();
    std::cout << N << " data records read from <" << inpfilename << ">." << std::endl;
 
-   // Fill the output file with the results.
-   std::vector<Boomerang> results = Engine(x, y, z, nugget, sill, range, radius);
+   // Execute all of the computations.
+   std::vector<Boomerang> results;
+   try
+   {
+       results = Engine(x, y, z, nugget, sill, range, radius);
+   }
+   catch(...)
+   {
+      std::cerr << "ERROR -- the Webinan Engine failed for an unknown reason." << std::endl;
+      outfile.close();
+      throw;
+   }
 
+   // Write out the header lines to the <output file>.
+   outfile << Now() << std::endl;
+   outfile << "<nugget>       " << nugget       << std::endl;
+   outfile << "<sill>         " << sill         << std::endl;
+   outfile << "<range>        " << range        << std::endl;
+   outfile << "<input file>   " << inpfilename  << std::endl;
+   outfile << "<output file>  " << outfilename  << std::endl;
+   outfile << std::endl;
+   outfile << "------------------------------------------------------------------------------------------------------------" << std::endl;
    outfile << "     Well_ID           X           Y           Z       Count        Zhat        Kstd        Zeta      pValue" << std::endl;
+   outfile << "------------------------------------------------------------------------------------------------------------" << std::endl;
+   // Fill the <output file> with the observation-by-observation results.
    for( int n=1; n<N; ++n )
    {
       outfile << std::fixed << std::setw(12)                         << id[n];

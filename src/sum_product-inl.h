@@ -9,7 +9,7 @@
 //    University of Minnesota
 //
 // version:
-//    12 June 2017
+//    13 June 2017
 //=============================================================================
 #ifndef SUM_PRODUCT_H
 #define SUM_PRODUCT_H

@@ -31,6 +31,7 @@
 				<Option object_output="obj/Release/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
+				<Option parameters="2.5 10.5 1200 50 .\data\TestData.csv TestData.out" />
 				<Compiler>
 					<Add option="-O2" />
 				</Compiler>
@@ -52,6 +53,9 @@
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
 		</Compiler>
+		<Linker>
+			<Add option="-static" />
+		</Linker>
 		<Unit filename="src/engine.cpp" />
 		<Unit filename="src/engine.h" />
 		<Unit filename="src/linear_systems.cpp" />

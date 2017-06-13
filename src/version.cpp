@@ -9,7 +9,7 @@
 //    University of Minnesota
 //
 // version:
-//    12 June 2017
+//    13 June 2017
 //=============================================================================
 #include <iostream>
 
@@ -17,7 +17,7 @@
 
 namespace
 {
-   const char* VERSION = "12 June 2017 [beta1]";
+   const char* VERSION = "13 June 2017 [beta1]";
 }
 
 //-----------------------------------------------------------------------------
@@ -99,9 +99,9 @@ void Help()
    std::cerr << std::endl;
 
    std::cerr << "Input:" << std::endl;
-   std::cerr << "   All of the observation data is supplied to Webinan via the input file."     << std::endl;
-   std::cerr << "   The input file contains no header lines. The input file contains one "      << std::endl;
-   std::cerr << "   line for each observation. Each observation line has four fields. "         << std::endl;
+   std::cerr << "   All of the observation data is supplied to Webinan via the <input file>."   << std::endl;
+   std::cerr << "   The <input file> contains no header lines. The <input file> contains "      << std::endl;
+   std::cerr << "   one line for each observation. Each observation line has four fields. "     << std::endl;
    std::cerr << std::endl;
    std::cerr << "   <Well_ID>       The specified observation unique identification number."    << std::endl;
    std::cerr << std::endl;
@@ -116,9 +116,9 @@ void Help()
    std::cerr << std::endl;
 
    std::cerr << "Output:" << std::endl;
-   std::cerr << "   All of the program results go to the output file. The output file "         << std::endl;
-   std::cerr << "   contains one header line. Following the header line there is one line "     << std::endl;
-   std::cerr << "   for each observation. Each observation line has nine fields. "              << std::endl;
+   std::cerr << "   All of the program results go to the <output file>. The <output file> "     << std::endl;
+   std::cerr << "   contains ten header lines. Following the header lines there is one "      << std::endl;
+   std::cerr << "   line for each observation. Each observation line has nine fields. "         << std::endl;
    std::cerr << std::endl;
    std::cerr << "   <Well_ID>       The specified observation unique identification number."    << std::endl;
    std::cerr << std::endl;
@@ -148,7 +148,7 @@ void Help()
    std::cerr << "                   is more extreme than <Zeta>. "                              << std::endl;
    std::cerr << "                     if <Zeta> < 0 then "                                      << std::endl;
    std::cerr << "                        <pValue> = Pr( standard normal < <Zeta> ) "            << std::endl;
-   std::cerr << "                     else if <Zeta> < 0 then "                                 << std::endl;
+   std::cerr << "                     else if <Zeta> > 0 then "                                 << std::endl;
    std::cerr << "                        <pValue> = Pr( standard normal > <Zeta> ) "            << std::endl;
    std::cerr << std::endl;
 

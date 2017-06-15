@@ -17,7 +17,7 @@
 
 namespace
 {
-   const char* VERSION = "15 June 2017 [beta1]";
+   const char* VERSION = "15 June 2017 [Beta2]";
 }
 
 //-----------------------------------------------------------------------------

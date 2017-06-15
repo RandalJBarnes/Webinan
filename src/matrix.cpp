@@ -11,7 +11,7 @@
 //    University of Minnesota
 //
 // version:
-//    13 June 2017
+//    15 June 2017
 //=============================================================================
 #include <algorithm>
 #include <cassert>
@@ -48,8 +48,7 @@ Matrix::Matrix( const Matrix& A )
    m_nCols( 0 ),
    m_Data( nullptr )
 {
-   if ( A.nRows() > 0 && A.nCols() > 0 )
-   {
+   if ( A.nRows() > 0 && A.nCols() > 0 ) {
       m_nRows = A.nRows();
       m_nCols = A.nCols();
       m_Data  = new double[ m_nRows*m_nCols ];
@@ -65,13 +64,12 @@ Matrix::Matrix( const std::vector<double>v )
    m_nCols( 0 ),
    m_Data( nullptr )
 {
-   if ( v.size() > 0 )
-   {
+   if ( v.size() > 0 ) {
       m_nRows = v.size();
       m_nCols = 1;
       m_Data  = new double[ m_nRows ];
 
-      for( int k=0; k<m_nRows; ++k )
+      for (int k = 0; k < m_nRows; ++k)
          m_Data[k] = v[k];
    }
 }
@@ -106,8 +104,8 @@ Matrix::Matrix( int nrows, int ncols, double a )
    m_nCols = ncols;
    m_Data  = new double[ m_nRows*m_nCols ];
 
-   for (int i=0; i<nrows; ++i)
-      for (int j=0; j<ncols; ++j)
+   for (int i = 0; i < nrows; ++i)
+      for (int j = 0; j < ncols; ++j)
          m_Data[i*ncols + j] = a;
 }
 
@@ -187,17 +185,15 @@ Matrix::Matrix( const std::string& str )
    m_nRows = rows.size();
 
    m_nCols = 0;
-   for (std::vector< std::vector< double > >::const_iterator i = rows.begin(); i != rows.end(); ++i)
-   {
+   for (std::vector< std::vector< double > >::const_iterator i = rows.begin(); i != rows.end(); ++i) {
       if ( static_cast<int>(i->size()) > m_nCols) m_nCols = i->size();
    }
 
    m_Data  = new double[ m_nRows*m_nCols ];
    memset( m_Data, 0, sizeof(double)*m_nRows*m_nCols );
 
-   for (std::vector< std::vector< double > >::const_iterator i = rows.begin(); i != rows.end(); ++i)
-      for (std::vector<double>::const_iterator j = i->begin(); j != i->end(); ++j)
-      {
+   for (std::vector<std::vector<double>>::const_iterator i = rows.begin(); i != rows.end(); ++i)
+      for (std::vector<double>::const_iterator j = i->begin(); j != i->end(); ++j) {
          int k = (i - rows.begin())*m_nCols + (j - i->begin());
          m_Data[k] = *j;
       }
@@ -226,18 +222,15 @@ void Matrix::Resize( int nrows, int ncols )
    assert( nrows >= 0 && ncols >= 0 );
 
    // Reallocate memory if necessary.
-   if (m_nRows != nrows || m_nCols != ncols)
-   {
+   if (m_nRows != nrows || m_nCols != ncols) {
       delete [] m_Data;
 
-      if ( nrows > 0 && ncols > 0 )
-      {
+      if ( nrows > 0 && ncols > 0 ) {
          m_nRows = nrows;
          m_nCols = ncols;
          m_Data  = new double[ m_nRows*m_nCols ];
       }
-      else
-      {
+      else {
          m_nRows = 0;
          m_nCols = 0;
          m_Data  = nullptr;
@@ -270,7 +263,7 @@ Matrix& Matrix::operator=( const Matrix& A )
 //-----------------------------------------------------------------------------
 Matrix& Matrix::operator=( double a )
 {
-   for (int k=0; k<m_nRows*m_nCols; ++k)
+   for (int k = 0; k < m_nRows*m_nCols; ++k)
       m_Data[k] = a;
 
    return *this;
@@ -389,10 +382,8 @@ double* Matrix::end()
 std::ostream& operator <<( std::ostream& ostr, const Matrix& A )
 {
    // Output the Matrix.
-   for (int i=0; i<A.nRows(); ++i)
-   {
-      for (int j=0; j<A.nCols(); ++j)
-      {
+   for (int i = 0; i < A.nRows(); ++i) {
+      for (int j = 0; j < A.nCols(); ++j) {
          ostr << std::fixed << std::setw(12) << std::setprecision(3) << A(i,j);
       }
       ostr << std::endl;
@@ -414,13 +405,9 @@ void ColumnSum( const Matrix& A, Matrix& x )
    x.Resize( 1, A.nCols() );
    x = 0.0;
 
-   for (int i=0; i<A.nRows(); ++i)
-   {
-      for (int j=0; j<A.nCols(); ++j)
-      {
+   for (int i = 0; i < A.nRows(); ++i)
+      for (int j = 0; j < A.nCols(); ++j)
          x(0,j) += A(i,j);
-      }
-   }
 }
 
 //-----------------------------------------------------------------------------
@@ -431,13 +418,9 @@ void RowSum( const Matrix& A, Matrix& x )
    x.Resize( A.nRows(), 1 );
    x = 0.0;
 
-   for (int j=0; j<A.nCols(); ++j)
-   {
-      for (int i=0; i<A.nRows(); ++i)
-      {
+   for (int j = 0; j < A.nCols(); ++j)
+      for (int i = 0; i < A.nRows(); ++i)
          x(i,0) += A(i,j);
-      }
-   }
 }
 
 //-----------------------------------------------------------------------------
@@ -464,10 +447,8 @@ double Trace( const Matrix& A )
 
    // Compute the Matrix trace: i.e. sum of the diagonal elements.
    double Sum  = 0.0;
-   for (int i=0; i<A.nRows(); ++i)
-   {
+   for (int i = 0; i < A.nRows(); ++i)
       Sum += A(i,i);
-   }
 
    return Sum;
 }
@@ -528,13 +509,10 @@ double L1Norm( const Matrix& A )
    // Compute the L1 norm.
    double MaxColSum = 0;
 
-   for (int j=0; j<A.nCols(); ++j)
-   {
+   for (int j = 0; j < A.nCols(); ++j) {
       double Sum = 0;
-      for (int i=0; i<A.nRows(); ++i)
-      {
+      for (int i = 0; i < A.nRows(); ++i)
          Sum += fabs( A(i,j) );
-      }
       if (Sum > MaxColSum) MaxColSum = Sum;
    }
 
@@ -557,13 +535,10 @@ double LInfNorm( const Matrix& A )
    // Compute the LInf norm.
    double MaxRowSum = 0;
 
-   for (int i=0; i<A.nRows(); ++i)
-   {
+   for (int i = 0; i < A.nRows(); ++i) {
       double Sum = 0;
-      for (int j=0; j<A.nCols(); ++j)
-      {
+      for (int j = 0; j < A.nCols(); ++j)
          Sum += fabs( A(i,j) );
-      }
       if (Sum > MaxRowSum) MaxRowSum = Sum;
    }
 
@@ -603,13 +578,9 @@ void Transpose( const Matrix& A, Matrix& C )
    Matrix At( A.nCols(), A.nRows() );
 
    // Set the transpose.
-   for (int i=0; i<A.nRows(); ++i)
-   {
-      for (int j=0; j<A.nCols(); ++j)
-      {
+   for (int i = 0; i < A.nRows(); ++i)
+      for (int j = 0; j < A.nCols(); ++j)
          At(j,i) = A(i,j);
-      }
-   }
 
    C = At;
 }
@@ -635,10 +606,8 @@ void Identity( Matrix& A, int n )
    A.Resize( n, n );
 
    // Set up the identity Matrix.
-   for (int i=0; i<n; ++i)
-   {
+   for (int i = 0; i < n; ++i)
       A(i,i) = 1;
-   }
 }
 
 //-----------------------------------------------------------------------------
@@ -653,18 +622,13 @@ void Slice( const Matrix& A, const std::vector<int>& row_flag, const std::vector
    int nCols = std::count_if( col_flag.begin(), col_flag.end(), [](int i){return i != 0;} );
    C.Resize( nRows, nCols );
 
-   if( nRows*nCols > 0 )
-   {
+   if( nRows*nCols > 0 ) {
       int row = 0;
-      for( int i=0; i<A.nRows(); ++i )
-      {
-         if( row_flag[i] != 0 )
-         {
+      for (int i = 0; i < A.nRows(); ++i) {
+         if (row_flag[i] != 0) {
             int col = 0;
-            for( int j=0; j<A.nCols(); ++j )
-            {
-               if( col_flag[j] != 0 )
-               {
+            for (int j = 0; j < A.nCols(); ++j) {
+               if (col_flag[j] != 0) {
                   C(row, col) = A(i,j);
                   ++col;
                }
@@ -692,14 +656,11 @@ void Add_aM( double a, const Matrix& A, Matrix& C )
    C = A;
    double* p = C.Base();
 
-   for (int i=0; i<C.nRows(); ++i)
-   {
-      for (int j=0; j<C.nCols(); ++j)
-      {
+   for (int i = 0; i < C.nRows(); ++i)
+      for (int j = 0; j < C.nCols(); ++j) {
          (*p) = a+(*p);
          ++p;
       }
-   }
 }
 
 //-----------------------------------------------------------------------------
@@ -714,14 +675,11 @@ void Subtract_aM( double a, const Matrix& A, Matrix& C )
    C = A;
    double* p = C.Base();
 
-   for (int i=0; i<C.nRows(); ++i)
-   {
-      for (int j=0; j<C.nCols(); ++j)
-      {
+   for (int i = 0; i < C.nRows(); ++i)
+      for (int j = 0; j < C.nCols(); ++j) {
          (*p) = a-(*p);
          ++p;
       }
-   }
 }
 
 //-----------------------------------------------------------------------------
@@ -736,14 +694,11 @@ void Multiply_aM( double a, const Matrix& A, Matrix& C )
    C = A;
    double* p = C.Base();
 
-   for (int i=0; i<C.nRows(); ++i)
-   {
-      for (int j=0; j<C.nCols(); ++j)
-      {
+   for (int i = 0; i < C.nRows(); ++i)
+      for (int j = 0; j < C.nCols(); ++j) {
          (*p) = a*(*p);
          ++p;
       }
-   }
 }
 
 
@@ -769,13 +724,9 @@ void Add_MM( const Matrix& A, const Matrix& B, Matrix& C )
    const double* q = B.Base();
    double*       r = C.Base();
 
-   for (int i=0; i<A.nRows(); ++i)
-   {
-      for (int j=0; j<A.nCols(); ++j)
-      {
+   for (int i = 0; i < A.nRows(); ++i)
+      for (int j = 0; j < A.nCols(); ++j)
          (*r++) = (*p++) + (*q++);
-      }
-   }
 }
 
 //-----------------------------------------------------------------------------
@@ -796,13 +747,9 @@ void Subtract_MM( const Matrix& A, const Matrix& B, Matrix& C )
    const double* q = B.Base();
    double*       r = C.Base();
 
-   for (int i=0; i<A.nRows(); ++i)
-   {
-      for (int j=0; j<A.nCols(); ++j)
-      {
+   for (int i = 0; i < A.nRows(); ++i)
+      for (int j = 0; j < A.nCols(); ++j)
          (*r++) = (*p++) - (*q++);
-      }
-   }
 }
 
 
@@ -824,13 +771,9 @@ void Multiply_MM( const Matrix& A, const Matrix& B, Matrix& C )
    Matrix AB( A.nRows(), B.nCols() );
 
    // Compute the Matrix product.
-   for (int i=0; i<A.nRows(); ++i)
-   {
-      for (int j=0; j<B.nCols(); ++j)
-      {
+   for (int i = 0; i < A.nRows(); ++i)
+      for (int j = 0; j < B.nCols(); ++j)
          AB(i,j) = SumProduct( A.nCols(), A.Base(i,0), B.Base(0,j), B.nCols() );
-      }
-   }
 
    C = AB;
 }
@@ -849,13 +792,9 @@ void Multiply_MtM( const Matrix& A, const Matrix& B, Matrix& C )
    Matrix AtB( A.nCols(), B.nCols() );
 
    // Compute the Matrix product.
-   for (int i=0; i<A.nCols(); ++i)
-   {
-      for (int j=0; j<B.nCols(); ++j)
-      {
+   for (int i = 0; i < A.nCols(); ++i)
+      for (int j = 0; j < B.nCols(); ++j)
          AtB(i,j) = SumProduct( A.nRows(), A.Base(0,i), A.nCols(), B.Base(0,j), B.nCols() );
-      }
-   }
 
    C = AtB;
 }
@@ -874,13 +813,9 @@ void Multiply_MMt( const Matrix& A, const Matrix& B, Matrix& C )
    Matrix ABt( A.nRows(), B.nRows() );
 
    // Compute the Matrix product.
-   for (int i=0; i<A.nRows(); ++i)
-   {
-      for (int j=0; j<B.nRows(); ++j)
-      {
+   for (int i = 0; i < A.nRows(); ++i)
+      for (int j = 0; j < B.nRows(); ++j)
          ABt(i,j) = SumProduct( A.nCols(), A.Base(i,0), B.Base(j,0) );
-      }
-   }
 
    C = ABt;
 }
@@ -899,13 +834,9 @@ void Multiply_MtMt( const Matrix& A, const Matrix& B, Matrix& C )
    Matrix AtBt( A.nCols(), B.nRows() );
 
    // Compute the Matrix product.
-   for (int i=0; i<A.nCols(); ++i)
-   {
-      for (int j=0; j<B.nRows(); ++j)
-      {
+   for (int i = 0; i < A.nCols(); ++i)
+      for (int j=0; j < B.nRows(); ++j)
          AtBt(i,j) = SumProduct( A.nRows(), A.Base(0,i), A.nCols(), B.Base(j,0) );
-      }
-   }
 
    C = AtBt;
 }
@@ -988,10 +919,9 @@ bool isClose( const Matrix& A, const Matrix& B, double tol )
    const double* q = B.Base();
    int n = A.nRows() * A.nCols();
 
-   for( int k = 0; k<n; k++ )
-   {
-      if( abs((*p++) - (*q++)) > tol ) return false;
-   }
+   for (int k = 0; k<n; k++)
+      if (abs((*p++) - (*q++)) > tol) return false;
+
    return true;
 }
 

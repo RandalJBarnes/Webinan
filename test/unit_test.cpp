@@ -7,7 +7,7 @@
 //    University of Minnesota
 //
 // version:
-//    13 June 2017
+//    15 June 2017
 //=============================================================================
 #include <iostream>
 
@@ -20,9 +20,8 @@ bool isClose( double x, double y, double tol )
 //-----------------------------------------------------------------------------
 bool Check( bool test, int line, const char* file )
 {
-   if( !test )
-   {
+   if (!test)
       std::cerr << "FAILED TEST: " << "\t LINE: " << line << "\t FILE: " << file << std::endl;
-   }
+
    return test;
 }

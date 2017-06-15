@@ -7,7 +7,7 @@
 //    University of Minnesota
 //
 // version:
-//    13 June 2017
+//    15 June 2017
 //=============================================================================
 #include <cassert>
 #include <cmath>
@@ -43,10 +43,8 @@ namespace{
 
       bool flag = true;
 
-      for (int i=0; i<N; ++i)
-      {
+      for (int i = 0; i < N; ++i)
          flag &= isClose(Beta(a[i],b[i]), y[i], TOLERANCE);
-      }
 
       return flag;
    }
@@ -77,10 +75,8 @@ namespace{
 
       bool flag = true;
 
-      for (int i=0; i<N; ++i)
-      {
+      for (int i = 0; i < N; ++i)
          flag &= isClose(IncompleteBeta(x[i],a[i],b[i]), y[i], TOLERANCE);
-      }
 
       double yy = IncompleteBeta(0.954356616956718,16.5,2.5);
       flag &= isClose(yy, 0.9, TOLERANCE);
@@ -114,10 +110,8 @@ namespace{
 
       bool flag = true;
 
-      for (int i=0; i<N; ++i)
-      {
+      for (int i = 0; i < N; ++i)
          flag &= isClose(IncompleteBetaInv(p[i],a[i],b[i]), x[i], TOLERANCE);
-      }
 
       return flag;
    }
@@ -152,10 +146,8 @@ namespace{
 
       bool flag = true;
 
-      for (int i=0; i<N; ++i)
-      {
+      for (int i = 0; i < N; ++i)
          flag &= isClose(Gamma(x[i]), y[i], TOLERANCE);
-      }
 
       return flag;
    }
@@ -184,10 +176,8 @@ namespace{
 
       bool flag = true;
 
-      for (int i=0; i<N; ++i)
-      {
+      for (int i = 0; i < N; ++i)
          flag &= isClose(IncompleteGamma(x[i],a[i]), y[i], TOLERANCE);
-      }
 
       return flag;
    }
@@ -216,10 +206,8 @@ namespace{
 
       bool flag = true;
 
-      for (int i=0; i<N; ++i)
-      {
+      for (int i = 0; i < N; ++i)
          flag &= isClose(IncompleteGammaInv(p[i],a[i]), x[i], TOLERANCE);
-      }
 
       return flag;
    }
@@ -247,10 +235,8 @@ namespace{
 
       bool flag = true;
 
-      for (int i=0; i<N; ++i)
-      {
+      for (int i = 0; i < N; ++i)
          flag &= isClose(GaussianCDF(x[i]), y[i], TOLERANCE);
-      }
 
       return flag;
    }
@@ -279,14 +265,11 @@ namespace{
 
       bool flag = true;
 
-      for (int i=0; i<N; ++i)
-      {
+      for (int i = 0; i < N; ++i)
          flag &= isClose(GaussianCDFInv(p[i]), z[i], TOLERANCE);
-      }
 
       return flag;
    }
-
 }
 
 //-----------------------------------------------------------------------------

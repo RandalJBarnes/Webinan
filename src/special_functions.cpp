@@ -13,7 +13,7 @@
 //    University of Minnesota
 //
 // version:
-//    13 June 2017
+//    15 June 2017
 //=============================================================================
 #include <cassert>
 #include <cmath>
@@ -69,19 +69,15 @@ double IncompleteBeta( double x, double a, double b )
    const int M = 20;    // 2*M+1 terms in the continued fraction.
    double T = 0;
 
-   if (x < a/(a+b))                    // Zhang (3.5.7)
-   {
-      for (int n = 2*M+1; n>=1; --n)
-      {
+   if (x < a/(a+b)) {                                       // Zhang (3.5.7)
+      for (int n = 2*M+1; n >= 1; --n) {
          double d;
 
-         if (n%2 == 1)
-         {
+         if (n%2 == 1) {
             double m = (n-1)/2;
             d = -(a+m)*(a+b+m)/(a+2*m)/(a+2*m+1) * x;
          }
-         else
-         {
+         else {
             double m = n/2;
             d = m*(b-m)/(a+2*m-1)/(a+2*m) * x;
          }
@@ -91,19 +87,15 @@ double IncompleteBeta( double x, double a, double b )
 
       return pow(x,a) * pow(1-x,b) / (a*Beta(a,b)) * T;
    }
-   else                                // Zhang (3.5.9)
-   {
-      for (int n = 2*M+1; n>=1; --n)
-      {
+   else {                                                   // Zhang (3.5.9)
+      for (int n = 2*M+1; n >= 1; --n) {
          double d;
 
-         if (n%2 == 1)
-         {
+         if (n%2 == 1) {
             double m = (n-1)/2;
             d = -(b+m)*(a+b+m)/(b+2*m)/(b+2*m+1) * (1-x);
          }
-         else
-         {
+         else {
             double m = n/2;
             d = m*(a-m)/(b+2*m-1)/(b+2*m) * (1-x);
          }
@@ -137,8 +129,7 @@ double IncompleteBetaInv( double p, double a, double b )
    double xL = 0.0;
    double xR = 1.0;
    double x  = 0.5;
-   for (int j=0; j<12; ++j)
-   {
+   for (int j = 0; j < 12; ++j) {
       x = (xL+xR)/2;
       if ( IncompleteBeta(x,a,b) > p )
          xR = x;
@@ -149,8 +140,7 @@ double IncompleteBetaInv( double p, double a, double b )
    // Halley's iterations.
    double ba = Beta(a,b);
 
-   for (int j=0; j<12; ++j)
-   {
+   for (int j = 0; j < 12; ++j) {
       double f   = IncompleteBeta(x,a,b) - p;         // error
       double df  = pow(x,a-1) * pow(1-x,b-1) / ba;    // dI/dx
       double ddf = df * ( (a-1)/x - (b-1)/(1-x) );    // d^2P/dx^2
@@ -225,8 +215,7 @@ double Gamma( double x )
       if (x > 0.0)
       {
          ga = 1.0;
-         for (int k=2; k<x; ++k)
-         {
+         for (int k = 2; k < x; ++k) {
             ga *= k;
          }
       }
@@ -240,14 +229,12 @@ double Gamma( double x )
       double r,z;
 
       // When |X| > 1, use (3.1.9).
-      if (fabs(x) > 1.0)
-      {
+      if (fabs(x) > 1.0) {
          z = fabs(x);
          int m = static_cast<int>(z);
          r = 1.0;
 
-         for (int k=1; k<=m; ++k)
-         {
+         for (int k = 1; k <= m; ++k) {
             r *= (z-k);
          }
          z -= m;
@@ -260,18 +247,15 @@ double Gamma( double x )
       // Calculate 1/Gamma(x) using (3.1.15)
       double gr = g[24];
 
-      for (int k=23; k>=0; --k)
-      {
+      for (int k = 23; k >= 0; --k) {
          gr = gr*z + g[k];
       }
       ga = 1.0/(gr*z);
 
       // When |x| > 1, use (3.1.9)
-      if (fabs(x) > 1.0)
-      {
+      if (fabs(x) > 1.0) {
          ga *= r;
-         if (x < 0.0)
-         {
+         if (x < 0.0) {
              ga = -ONE_PI/(x*ga*sin(ONE_PI*x));
          }
       }
@@ -303,17 +287,15 @@ double IncompleteGamma( double x, double a )
    assert( a > 0 && a < 170 );
    assert( x >= 0 );
 
-   if (x==0.0)                               // special case.
-   {
+   if (x == 0.0) {                           // special case.
       return 0.0;
    }
-   else if (x<=1+a)                          // Zhang (3.4.4)
+   else if (x <= 1+a)                        // Zhang (3.4.4)
    {
       double s = 1/a;
       double r = s;
 
-      for (int k=1; k <= 60; ++k)
-      {
+      for (int k = 1; k <= 60; ++k) {
          r *= x/(a+k);
          s += r;
          if (fabs(r/s) < 1e-15) break;
@@ -323,7 +305,7 @@ double IncompleteGamma( double x, double a )
    else                                      // Zhang (3.4.11)
    {
       double T = 0;
-      for (int k=60; k >= 1; --k)
+      for (int k = 60; k >= 1; --k)
          T = (k-a)/(1+ k/(x+T));
       return 1 - exp(a*log(x)-x)/(x+T) / Gamma(a);
    }
@@ -359,18 +341,16 @@ double IncompleteGammaInv( double p, double a )
    double x;
 
    // End point cases.
-   if (p==0.0) return 0.0;
-   if (p==1.0) return INF;
+   if (p == 0.0) return 0.0;
+   if (p == 1.0) return INF;
 
    // Initial guess from Press et al. (2007).
-   if (a>1)
-   {
+   if (a > 1) {
       double d = 1/(9*a);
       double t = 1 - d - GaussianCDFInv(p) * sqrt(d);
       x = a*t*t*t;
    }
-   else
-   {
+   else {
       double t = 1.0 - (0.253 + 0.12*a)*a;
       if (p < t)
          x = pow(p/t,1/a);
@@ -381,8 +361,7 @@ double IncompleteGammaInv( double p, double a )
    // Halley's iterations.
    double ga = Gamma(a);
 
-   for (int j=0; j<12; ++j)
-   {
+   for (int j = 0; j < 12; ++j) {
       if (x <= 0.0) return 0.0;                    // x is too small to compute accurately.
 
       double f   = IncompleteGamma(x,a) - p;       // error

@@ -15,7 +15,7 @@
 //    University of Minnesota
 //
 // version:
-//    13 June 2017
+//    15 June 2017
 //=============================================================================
 #include <iomanip>
 #include <utility>
@@ -159,8 +159,8 @@ namespace{
       Matrix A(2,3);
       Matrix B("1,2,3;4,5,6");
 
-      for (int i=0; i<2; ++i)
-         for (int j=0; j<3; ++j)
+      for (int i = 0; i < 2; ++i)
+         for (int j = 0; j < 3; ++j)
             A(i,j) = B(i,j);
 
       return CHECK( isClose(A, B, TOLERANCE) );
@@ -192,7 +192,7 @@ namespace{
       const double* pA = A.Base();
       double* pB = B.Base();
 
-      for (int i=0; i<6; ++i)
+      for (int i = 0; i < 6; ++i)
          *pB++ = *pA++;
 
       return CHECK( isClose(A, B, TOLERANCE) );
@@ -206,8 +206,8 @@ namespace{
       Matrix A("1,2,3;4,5,6");
       Matrix B(2,3);
 
-      for (int i=0; i<2; ++i)
-         for (int j=0; j<3; ++j)
+      for (int i = 0; i < 2; ++i)
+         for (int j = 0; j < 3; ++j)
             *B.Base(i,j) = *A.Base(i,j);
 
       return CHECK( isClose(A, B, TOLERANCE) );

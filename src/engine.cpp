@@ -10,7 +10,7 @@
 //    University of Minnesota
 //
 // version:
-//    13 June 2017
+//    15 June 2017
 //=============================================================================
 #include <cassert>
 #include <iomanip>
@@ -26,49 +26,46 @@
 //
 //=============================================================================
 std::vector<Boomerang> Engine(
-   const std::vector<double>x,
-   const std::vector<double>y,
-   const std::vector<double>z,
    double nugget,
    double sill,
    double range,
-   double radius )
+   double radius,
+   std::vector<DataRecord> obs )
 {
    // Manifest constants.
    const int MINIMUM_COUNT = 10;
-   const int N = x.size();     // number of observations.
+
+   const int N = obs.size();     // number of observations.
    assert(N > 1);
 
    // Pre-compute the separation distance matrix for all of the observations.
    Matrix D(N, N);
-   for( int i=0; i<N-1; ++i )
-   {
-      for( int j=i+1; j<N; ++j )
+   for (int i = 0; i < N-1; ++i) {
+      for (int j = i+1; j < N; ++j)
       {
-         D(i,j) = _hypot( x[i]-x[j], y[i]-y[j] );
+         D(i,j) = _hypot( obs[i].x-obs[j].x, obs[i].y-obs[j].y );
          D(j,i) = D(i,j);
       }
    }
 
    // Pre-compute the covariance matrix for all of the observations.
    Matrix C(N, N, sill);
-   for( int i=0; i<N-1; ++i )
-   {
-      for( int j=i+1; j<N; ++j )
-      {
+   for (int i = 0; i < N-1; ++i) {
+      for (int j = i+1; j < N; ++j) {
          C(i,j) = (sill-nugget)*exp(-3.0*D(i,j)/range);
          C(j,i) = C(i,j);
       }
    }
 
    // Create the matrix of observed values.
-   Matrix ZZ(z);
+   Matrix Z(N, 1);
+   for (int k = 0; k < N; ++k)
+      Z(k,0) = obs[k].z;
 
    // Pass through the set of observations one at a time.
    std::vector<Boomerang> results(N);
 
-   for( int k=0; k<N; ++k )
-   {
+   for (int k = 0; k < N; ++k) {
       // Determine the active subset of the observations for the location of
       // observation [k]; i.e. those observations outside of the buffer radius.
       std::vector<int> current(N, 0);
@@ -78,8 +75,7 @@ std::vector<Boomerang> Engine(
       first[0] = 1;
 
       std::vector<int> active(N);
-      for( int j=0; j<N; ++j)
-      {
+      for (int j = 0; j < N; ++j) {
          if( D(k,j) >= radius )
             active[j] = 1;
          else
@@ -94,7 +90,7 @@ std::vector<Boomerang> Engine(
          results[k].kstd   = NAN;
          results[k].zeta   = NAN;
          results[k].pvalue = NAN;
-         results[k].cnt    = 0;
+         results[k].cnt    = M;
          continue;
       }
 
@@ -106,15 +102,14 @@ std::vector<Boomerang> Engine(
       Matrix b;
       Slice(C, active, current, b);
 
-      Matrix Z;
-      Slice(ZZ, active, first, Z);
+      Matrix ZZ;
+      Slice(Z, active, first, ZZ);
 
       // Solve the Ordinary Kriging system.
       Matrix L, u, v, lv, w;
       Matrix ones(M, 1, 1.0);
 
-      if( CholeskyDecomposition(A,L) )
-      {
+      if (CholeskyDecomposition(A,L)) {
          CholeskySolve(L,b,u);
          CholeskySolve(L,ones,v);
 
@@ -123,24 +118,27 @@ std::vector<Boomerang> Engine(
          Multiply_aM( lambda, v, lv );
          Subtract_MM( u, lv, w );
 
-         double zhat = DotProduct(w,Z);
+         double zhat = DotProduct(w,ZZ);
          double kstd = sqrt( sill - DotProduct(b,w) - lambda );
 
          results[k].zhat = zhat;
          results[k].kstd = kstd;
-         results[k].zeta = (z[k]-zhat) / kstd;
+         results[k].zeta = (obs[k].z-zhat) / kstd;
 
-         if( results[k].zeta < 0 )
+         if (results[k].zeta < 0)
             results[k].pvalue = GaussianCDF(results[k].zeta);
          else
             results[k].pvalue = 1 - GaussianCDF(results[k].zeta);
 
          results[k].cnt  = M;
       }
-      else
-      {
-         std::cerr << "ERROR: Cholesky Decompositon failed " << k << std::endl;
-         exit(5);
+      else {
+         results[k].zhat   = NAN;
+         results[k].kstd   = NAN;
+         results[k].zeta   = NAN;
+         results[k].pvalue = NAN;
+         results[k].cnt    = M;
+         continue;
       }
    }
    return results;

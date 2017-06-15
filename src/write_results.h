@@ -1,5 +1,5 @@
 //=============================================================================
-// engine.h
+// write_results.h
 //
 // author:
 //    Dr. Randal J. Barnes
@@ -9,33 +9,26 @@
 // version:
 //    15 June 2017
 //=============================================================================
-#ifndef ENGINE_H
-#define ENGINE_H
+#ifndef WRITE_RESULTS_H
+#define WRITE_RESULTS_H
 
 #include <stdexcept>
+#include <string>
+#include <tuple>
 #include <vector>
 
-#include "read_data.h"
-
-
 //-----------------------------------------------------------------------------
-struct Boomerang {
-   double zhat;
-   double kstd;
-   double zeta;
-   double pvalue;
-   int    cnt;
+class InvalidOutputFile : public std::runtime_error {
+   public :
+      InvalidOutputFile( const std::string& message ) : std::runtime_error(message) {
+      }
 };
 
 //-----------------------------------------------------------------------------
-std::vector<Boomerang> Engine(
-   double nugget,
-   double sill,
-   double range,
-   double radius,
-   std::vector<DataRecord> obs
-);
+void write_results( const std::string& outfilename,
+                   std::vector<std::string> header, std::vector<DataRecord> obs,
+                   std::vector<Boomerang> results );
 
 
 //=============================================================================
-#endif  // ENGINE_H
+#endif  // WRITE_RESULTS_H

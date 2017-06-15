@@ -7,7 +7,7 @@
 //    University of Minnesota
 //
 // version:
-//    13 June 2017
+//    15 June 2017
 //=============================================================================
 #include <iostream>
 
@@ -42,12 +42,8 @@ int main()
    nsucc += counts.first;
    nfail += counts.second;
 
-   if(nfail > 0)
-   {
+   if (nfail > 0)
       std::cerr << "AAKOZI TESTS: nsucc = " << nsucc << '\t' << "nfail = " << nfail << std::endl;
-   }
    else
-   {
       std::cerr << "AAKOZI TESTS: All " << nsucc << " tests passed." << std::endl;
-   }
 }

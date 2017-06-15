@@ -14,7 +14,7 @@
 //    University of Minnesota
 //
 // version:
-//    13 June 2017
+//    15 June 2017
 //=============================================================================
 #include "linear_systems.h"
 
@@ -69,19 +69,17 @@ bool CholeskyDecomposition( const Matrix& A, Matrix& L )
 
    // Carry out the Cholesky decomposition on Matrix "A".
    L = A;
-   for (int j=0; j<N; ++j)
-   {
-      if (j>0)
+   for (int j = 0; j < N; ++j) {
+      if (j > 0)
       {
-         for (int k=j; k<N; ++k)
+         for (int k = j; k < N; ++k)
             L(k,j) -= SumProduct(j, L.Base(j,0), L.Base(k,0));
       }
 
       if (L(j,j) < MIN_DIVISOR) return false;
       L(j,j) = sqrt(L(j,j));
 
-      for (int k=j+1; k<N; ++k)
-      {
+      for (int k = j+1; k < N; ++k) {
          L(k,j) /= L(j,j);
          L(j,k) = 0.0;
       }
@@ -139,10 +137,9 @@ void CholeskySolve( const Matrix& L, const Matrix& b, Matrix& x )
    x = b;
 
    double Sum;
-   for( int i=0; i<N; i++ )
-   {
+   for (int i = 0; i < N; i++) {
       Sum = x(i,0);
-      for( int j=0; j<i; ++j )
+      for (int j = 0; j < i; ++j)
          Sum -= L(i,j) * x(j,0);
 
       x(i,0) = Sum / L(i,i);
@@ -150,10 +147,9 @@ void CholeskySolve( const Matrix& L, const Matrix& b, Matrix& x )
 
    // Solve L' x = y using back substitution.
    // See Golub and Van Loan, 1983, Algorithm 4.1-2, page 53.
-   for( int i=N-1; i>=0; --i )
-   {
+   for (int i = N-1; i >= 0; --i) {
       Sum = x(i,0);
-      for( int j=i+1; j<N; ++j )
+      for (int j=i+1; j<N; ++j)
          Sum -= L(j,i) * x(j,0);
 
       x(i,0) = Sum / L(i,i);
@@ -198,11 +194,10 @@ bool RSPDInv( const Matrix& A, Matrix& Ainv )
    CholeskyDecomposition(A,L);
 
    // Invert L in place; remember that L is lower triangular.
-   for (int k=0; k<N; ++k )
-   {
+   for (int k = 0; k < N; ++k) {
       L(k,k) = 1.0/L(k,k);
 
-      for (int i=0; i<k; ++i )
+      for (int i = 0; i < k; ++i)
          L(k,i) = -L(k,k) * SumProduct( k-i, L.Base(i,i), N, L.Base(k,i) );
    }
 
@@ -296,7 +291,7 @@ bool LeastSquaresSolve( const Matrix& A, const Matrix& B, Matrix& X )
    const int N = A.nCols();
    const int P = B.nCols();
 
-   // Allocate the space for the colution.
+   // Allocate the space for the solution.
    X.Resize(N,P);
 
    // By design, this algorithm operates on A and B in place.  That is, it is
@@ -312,26 +307,25 @@ bool LeastSquaresSolve( const Matrix& A, const Matrix& B, Matrix& X )
    // Carry out the modified Gram-Schmidt orthogonalization:  i.e. Golub and
    // Van Loan (1996), Algorithm 5.2.5. applied to the augmented coefficient
    // Matrix.
-   for (int k=0; k<N; ++k)
-   {
+   for (int k = 0; k < N; ++k) {
       double Sum = SumProduct(M, AA.Base(0,k), AA.nCols());
-      if(Sum < MIN_DIVISOR) return false;
+      if (Sum < MIN_DIVISOR) return false;
 
       R(k,k) = sqrt(Sum);
-      for (int i=0; i<M; ++i)
+      for (int i = 0; i < M; ++i)
          AA(i,k) /= R(k,k);
 
-      for (int j=k+1; j<N; ++j)
+      for (int j = k+1; j < N; ++j)
       {
          R(k,j) = SumProduct(M, AA.Base(0,k), AA.nCols(), AA.Base(0,j), AA.nCols());
-         for (int i=0; i<M; ++i)
+         for (int i = 0; i < M; ++i)
             AA(i,j) -= AA(i,k)*R(k,j);
       }
 
-      for (int p=0; p<P; ++p)
+      for (int p = 0; p < P; ++p)
       {
          X(k,p) = SumProduct(M, AA.Base(0,k), AA.nCols(), BB.Base(0,p), BB.nCols());
-         for (int i=0; i<M; ++i)
+         for (int i = 0; i < M; ++i)
             BB(i,p) -= AA(i,k)*X(k,p);
       }
    }
@@ -340,14 +334,13 @@ bool LeastSquaresSolve( const Matrix& A, const Matrix& B, Matrix& X )
    // Algorithm 3.1.2. Recall that the augmenting Matrix "z" is stored in "X".
    if( abs(R(N-1,N-1)) < MIN_DIVISOR ) return false;
 
-   for (int p=0; p<P; ++p)
+   for (int p = 0; p < P; ++p)
       X(N-1,p) /= R(N-1,N-1);
 
-   for (int i=N-2; i>=0; --i)
-   {
+   for (int i = N-2; i >= 0; --i) {
       if (abs(R(i,i)) < MIN_DIVISOR ) return false;
 
-      for (int p=0; p<P; ++p)
+      for (int p = 0; p < P; ++p)
          X(i,p) = (X(i,p) - SumProduct(N-i-1, R.Base(i,i+1), X.Base(i+1,p), X.nCols())) / R(i,i);
    }
 
@@ -382,9 +375,9 @@ void AffineTransformation( const Matrix& A, const Matrix& B, const Matrix& C, Ma
    Matrix DD;
    Multiply_MM(A,B,DD);
 
-   for (int i=0; i<DD.nRows(); ++i)
+   for (int i = 0; i < DD.nRows(); ++i)
    {
-      for (int j=0; j<DD.nCols(); ++j)
+      for (int j = 0; j < DD.nCols(); ++j)
       {
          DD(i,j) += C(0,j);
       }

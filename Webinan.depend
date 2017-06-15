@@ -53,7 +53,7 @@
 1497528912 c:\users\randal\google drive\projects\webinan\src\now.h
 	<string>
 
-1497536872 source:c:\users\randal\google drive\projects\webinan\src\special_functions.cpp
+1497549722 source:c:\users\randal\google drive\projects\webinan\src\special_functions.cpp
 	<cassert>
 	<cmath>
 	"numerical_constants.h"
@@ -62,7 +62,7 @@
 1497528911 c:\users\randal\google drive\projects\webinan\src\numerical_constants.h
 	<limits>
 
-1497528911 source:c:\users\randal\google drive\projects\webinan\src\version.cpp
+1497549316 source:c:\users\randal\google drive\projects\webinan\src\version.cpp
 	<iostream>
 	"version.h"
 
@@ -116,10 +116,10 @@
 	"unit_test.h"
 	"..\src\special_functions.h"
 
-1497528911 source:c:\users\randal\google drive\projects\webinan\test\unit_test.cpp
+1497538180 source:c:\users\randal\google drive\projects\webinan\test\unit_test.cpp
 	<iostream>
 
-1497538662 source:c:\users\randal\google drive\projects\webinan\src\main.cpp
+1497545698 source:c:\users\randal\google drive\projects\webinan\src\main.cpp
 	<cstring>
 	<ctime>
 	<iostream>
@@ -130,30 +130,46 @@
 	"version.h"
 	"write_results.h"
 
-1497539294 source:c:\users\randal\google drive\projects\webinan\src\read_data.cpp
+1497547701 source:c:\users\randal\google drive\projects\webinan\src\read_data.cpp
 	<algorithm>
 	<fstream>
 	<sstream>
+	"../include/csv.h"
 	"read_data.h"
 
-1497532103 c:\users\randal\google drive\projects\webinan\src\read_data.h
+1497545481 c:\users\randal\google drive\projects\webinan\src\read_data.h
 	<stdexcept>
 	<string>
 	<tuple>
 	<vector>
 
-1497535058 c:\users\randal\google drive\projects\webinan\src\write_results.h
+1497545962 c:\users\randal\google drive\projects\webinan\src\write_results.h
 	<stdexcept>
 	<string>
 	<tuple>
 	<vector>
 
-1497540140 source:c:\users\randal\google drive\projects\webinan\src\write_results.cpp
+1497547520 source:c:\users\randal\google drive\projects\webinan\src\write_results.cpp
 	<algorithm>
-	<cassert>
 	<fstream>
 	<iomanip>
 	<sstream>
 	"engine.h"
 	"write_results.h"
+
+1497461280 c:\users\randal\google drive\projects\webinan\include\csv.h
+	<vector>
+	<string>
+	<cstring>
+	<algorithm>
+	<utility>
+	<cstdio>
+	<exception>
+	<mutex>
+	<thread>
+	<condition_variable>
+	<memory>
+	<cassert>
+	<cerrno>
+	<istream>
 

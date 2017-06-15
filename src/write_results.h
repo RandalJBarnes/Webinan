@@ -25,9 +25,7 @@ class InvalidOutputFile : public std::runtime_error {
 };
 
 //-----------------------------------------------------------------------------
-void write_results( const std::string& outfilename,
-                   std::vector<std::string> header, std::vector<DataRecord> obs,
-                   std::vector<Boomerang> results );
+void write_results( const std::string& outfilename, std::vector<DataRecord> obs, std::vector<Boomerang> results );
 
 
 //=============================================================================

@@ -12,7 +12,6 @@
 //    15 June 2017
 //=============================================================================
 #include <algorithm>
-#include <cassert>
 #include <fstream>
 #include <iomanip>
 #include <sstream>
@@ -21,12 +20,7 @@
 #include "write_results.h"
 
 //-----------------------------------------------------------------------------
-void write_results( const std::string& outfilename,
-                   std::vector<std::string> header, std::vector<DataRecord> obs,
-                   std::vector<Boomerang> results ) {
-   // Validate the arguments.
-   assert( header.size() == 4);
-   assert( obs.size() == results.size() );
+void write_results( const std::string& outfilename, std::vector<DataRecord> obs, std::vector<Boomerang> results ) {
 
    // Open the specified output file.
    std::ofstream outfile( outfilename );
@@ -36,17 +30,14 @@ void write_results( const std::string& outfilename,
       throw InvalidOutputFile(message.str());
    }
 
-   // Write out the header lines to the output file.
-   for ( std::vector<std::string>::iterator iter = header.begin(); iter != header.end(); ++iter ) {
-      outfile << *iter << ',';
-   }
-   outfile << "Count,Zhat,Kstd,Zeta,pValue" << std::endl;
+   // Write out the header line to the output file.
+   outfile << "ID,X,Y,Z,Count,Zhat,Kstd,Zeta,pValue" << std::endl;
 
    // Fill the output file with the observation-by-observation results using
    // a maximum precision .csv format.
    outfile << std::setprecision(std::numeric_limits<long double>::digits10 + 1);
 
-   for ( unsigned n=1; n<obs.size(); ++n ) {
+   for ( unsigned n = 0; n < obs.size(); ++n ) {
       outfile << obs[n].id << ',';
       outfile << obs[n].x  << ',';
       outfile << obs[n].y  << ',';

@@ -38,9 +38,7 @@ struct DataRecord{
    double z;
 };
 
-typedef std::tuple< std::vector<std::string>, std::vector<DataRecord> > InputData;
-
-InputData read_data( const std::string& inpfilename );
+std::vector<DataRecord> read_data( const std::string& inpfilename );
 
 
 //=============================================================================

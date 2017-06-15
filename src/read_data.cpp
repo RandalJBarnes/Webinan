@@ -3,6 +3,12 @@
 //
 //    Read in the observation data from the user-specified file.
 //
+// notes:
+// o  This function uses Ben Strasser's "fast-cpp-csv-parser" to read in the
+//    .csv input file. See
+//
+//       https://github.com/ben-strasser/fast-cpp-csv-parser
+//
 // author:
 //    Dr. Randal J. Barnes
 //    Department of Civil, Environmental, and Geo- Engineering
@@ -16,43 +22,37 @@
 #include <sstream>
 
 #include "../include/csv.h"
-
 #include "read_data.h"
 
 //-----------------------------------------------------------------------------
-InputData read_data( const std::string& inpfilename ) {
-   // Open the specified input data file.
-   std::ifstream inpfile( inpfilename );
-   if (inpfile.fail()) {
+std::vector<DataRecord> read_data( const std::string& inpfilename ) {
+   std::vector<DataRecord> obs;
+
+   try {
+      io::CSVReader<4,
+         io::trim_chars<' ', '\t'>,
+         io::no_quote_escape<','>,
+         io::throw_on_overflow,
+         io::single_and_empty_line_comment<'!','#'>> in(inpfilename);
+
+      std::string id;
+      double X, Y, Z;
+
+      while (in.read_row(id,X,Y,Z)){
+         DataRecord s = { id, X, Y, Z };
+         obs.push_back(s);
+      }
+   }
+   catch (io::error::can_not_open_file& e) {
       std::stringstream message;
       message << "Could not open <" << inpfilename << "> for input.";
       throw InvalidInputFile(message.str());
    }
-
-   // Get the input data.
-   std::vector<std::string> headers = {"A", "B", "C", "D"};
-   std::vector<DataRecord> obs;
-
-   std::string line;
-   while( std::getline(inpfile, line) ) {
-      std::replace( line.begin(), line.end(), ',', ' ' );
-      std::istringstream is(line);
-
-      std::string ii;
-      double xx, yy, zz;
-
-      if ( is >> ii >> xx >> yy >> zz ) {
-         DataRecord s = { ii, xx, yy, zz };
-         obs.push_back(s);
-      }
-      else {
-         inpfile.close();
-         std::stringstream message;
-         message << "Reading the observation data failed on line " << obs.size()+1 << " of file " << inpfilename << ".";
-         throw InvalidDataRecord(message.str());
-      }
+   catch (...) {
+      std::stringstream message;
+      message << "Reading the observation data failed on line " << obs.size()+1 << " of file " << inpfilename << ".";
+      throw InvalidDataRecord(message.str());
    }
-   inpfile.close();
 
-   return std::make_tuple( headers, obs );
+   return obs;
 }

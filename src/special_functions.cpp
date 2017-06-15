@@ -62,8 +62,8 @@ double IncompleteBeta( double x, double a, double b )
    assert( x >= 0 && x <= 1);
 
    // Check the end points.
-   if (x==1.0) return 1.0;
-   if (x==0.0) return 0.0;
+   if (abs(x-1.0) < EPS) return 1.0;
+   if (abs(x) < EPS) return 0.0;
 
    // Compute using the continued fraction.
    const int M = 20;    // 2*M+1 terms in the continued fraction.
@@ -122,8 +122,8 @@ double IncompleteBetaInv( double p, double a, double b )
    assert( p >= 0 && p <= 1 );
 
    // Check the end points.
-   if (p==1.0) return 1.0;
-   if (p==0.0) return 0.0;
+   if (abs(p-1.0) <= EPS) return 1.0;
+   if (abs(p) <= EPS) return 0.0;
 
    // Start with a bisection scheme.
    double xL = 0.0;
@@ -209,7 +209,7 @@ double Gamma( double x )
    if (x > 171.0) return INF;
 
    // Handle the special case of an integer argument.
-   if (x == floor(x))
+   if (abs(x-floor(x)) <= EPS )
    {
       // When x == n > 0, use (3.1.5).
       if (x > 0.0)
@@ -287,7 +287,7 @@ double IncompleteGamma( double x, double a )
    assert( a > 0 && a < 170 );
    assert( x >= 0 );
 
-   if (x == 0.0) {                           // special case.
+   if (abs(x) <= EPS) {                           // special case.
       return 0.0;
    }
    else if (x <= 1+a)                        // Zhang (3.4.4)
@@ -341,8 +341,8 @@ double IncompleteGammaInv( double p, double a )
    double x;
 
    // End point cases.
-   if (p == 0.0) return 0.0;
-   if (p == 1.0) return INF;
+   if (abs(p) <= EPS) return 0.0;
+   if (abs(p-1.0) <= EPS) return INF;
 
    // Initial guess from Press et al. (2007).
    if (a > 1) {
@@ -401,7 +401,7 @@ double GaussianCDF(double x)
    else
    {
       long double s=x, t=0, b=x, q=x*x, i=1;
-      while (s!=t)
+      while (abs(s-t) > EPS)
          s = (t=s) + (b *= q/(i+=2));
       return static_cast<double>( 0.5 + s*exp(-0.5*q - 0.91893853320467274178L) );
    }

@@ -87,11 +87,10 @@ int main(int argc, char* argv[]) {
    }
 
    // Read in the observation data from the specified input data file.
-   std::vector<std::string> header;
    std::vector<DataRecord> obs;
 
    try {
-      std::tie(header,obs) = read_data( argv[5] );
+      obs = read_data( argv[5] );
       std::cout << obs.size() << " data records read from <" << argv[5] << ">." << std::endl;
    }
    catch (InvalidInputFile& e) {
@@ -115,7 +114,7 @@ int main(int argc, char* argv[]) {
 
    // Write out the results to the specified output data file.
    try {
-      write_results( argv[6], header, obs, results );
+      write_results( argv[6], obs, results );
       std::cout << "Output file <" << argv[6] << "> created. " << std::endl;
    }
    catch (InvalidOutputFile& e) {

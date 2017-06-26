@@ -10,7 +10,7 @@
 //    University of Minnesota
 //
 // version:
-//    15 June 2017
+//    26 June 2017
 //=============================================================================
 #include <cassert>
 #include <iomanip>
@@ -43,7 +43,7 @@ std::vector<Boomerang> Engine(
    for (int i = 0; i < N-1; ++i) {
       for (int j = i+1; j < N; ++j)
       {
-         D(i,j) = _hypot( obs[i].x-obs[j].x, obs[i].y-obs[j].y );
+         D(i,j) = hypot( obs[i].x-obs[j].x, obs[i].y-obs[j].y );
          D(j,i) = D(i,j);
       }
    }

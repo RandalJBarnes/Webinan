@@ -11,14 +11,20 @@
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
-				<Option parameters="2 16 10000 100 .\data\TestData.txt" />
+				<Option parameters="2 16 10000 100 .\data\TestData.csv TestData_out.csv" />
 				<Compiler>
+					<Add option="-Wredundant-decls" />
+					<Add option="-Wundef" />
+					<Add option="-Wfloat-equal" />
 					<Add option="-Wunreachable-code" />
+					<Add option="-Wmissing-declarations" />
+					<Add option="-Wmissing-include-dirs" />
 					<Add option="-Weffc++" />
 					<Add option="-Wmain" />
 					<Add option="-pedantic" />
 					<Add option="-Wextra" />
 					<Add option="-Wall" />
+					<Add option="-std=c++0x" />
 					<Add option="-m64" />
 					<Add option="-g" />
 				</Compiler>
@@ -31,13 +37,19 @@
 				<Option object_output="obj/Release/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
-				<Option parameters="2.5 10.5 1200 50 .\data\TestData.csv TestData.out" />
+				<Option parameters="2.5 10.5 1200 50 .\data\TestData.csv TestData_out.csv" />
 				<Compiler>
 					<Add option="-O2" />
+					<Add option="-std=c++0x" />
+					<Add option="-m64" />
 				</Compiler>
 				<Linker>
-					<Add option="-s" />
+					<Add option="-m64" />
+					<Add option="-static" />
 				</Linker>
+				<ExtraCommands>
+					<Add after='cmd /c &quot;copy .\bin\Release\Webinan.exe .&quot;' />
+				</ExtraCommands>
 			</Target>
 			<Target title="Test">
 				<Option output="bin/Test/test_Webinan" prefix_auto="1" extension_auto="1" />
@@ -45,17 +57,22 @@
 				<Option type="1" />
 				<Option compiler="gcc" />
 				<Compiler>
+					<Add option="-std=c++0x" />
+					<Add option="-m64" />
 					<Add option="-g" />
 				</Compiler>
+				<Linker>
+					<Add option="-m64" />
+				</Linker>
 			</Target>
 		</Build>
 		<Compiler>
-			<Add option="-Wall" />
 			<Add option="-fexceptions" />
 		</Compiler>
 		<Linker>
 			<Add option="-static" />
 		</Linker>
+		<Unit filename="include/csv.h" />
 		<Unit filename="src/engine.cpp" />
 		<Unit filename="src/engine.h" />
 		<Unit filename="src/linear_systems.cpp" />
@@ -69,11 +86,15 @@
 		<Unit filename="src/now.cpp" />
 		<Unit filename="src/now.h" />
 		<Unit filename="src/numerical_constants.h" />
+		<Unit filename="src/read_data.cpp" />
+		<Unit filename="src/read_data.h" />
 		<Unit filename="src/special_functions.cpp" />
 		<Unit filename="src/special_functions.h" />
 		<Unit filename="src/sum_product-inl.h" />
 		<Unit filename="src/version.cpp" />
 		<Unit filename="src/version.h" />
+		<Unit filename="src/write_results.cpp" />
+		<Unit filename="src/write_results.h" />
 		<Unit filename="test/test_engine.cpp">
 			<Option target="Test" />
 		</Unit>

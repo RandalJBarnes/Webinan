@@ -9,7 +9,7 @@
 //    University of Minnesota
 //
 // version:
-//    15 June 2017
+//    26 June 2017
 //=============================================================================
 #include <cstring>
 #include <ctime>
@@ -111,6 +111,13 @@ int main(int argc, char* argv[]) {
       std::cerr << "The Webinan Engine failed for an unknown reason." << std::endl;
       throw;
    }
+
+
+// TODO: Add analysis of residuals (i.e. zeta) with output to a file.
+// --  Run a Sign Test on the residuals.
+// --  Check the Normality of residuals.
+// --  Check that the variance of residuals is close to 1.
+
 
    // Write out the results to the specified output data file.
    try {

@@ -7,7 +7,7 @@
 //    University of Minnesota
 //
 // version:
-//    15 June 2017
+//    26 June 2017
 //=============================================================================
 #ifndef TEST_MATRIX_H
 #define TEST_MATRIX_H

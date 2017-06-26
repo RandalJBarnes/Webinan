@@ -1,15 +1,13 @@
 //=============================================================================
 // version.cpp
 //
-//    A simple version reporting class.
-//
 // author:
 //    Dr. Randal J. Barnes
 //    Department of Civil, Environmental, and Geo- Engineering
 //    University of Minnesota
 //
 // version:
-//    15 June 2017
+//    26 June 2017
 //=============================================================================
 #include <iostream>
 
@@ -17,191 +15,194 @@
 
 namespace
 {
-   const char* VERSION = "15 June 2017 [Beta2]";
+   const char* VERSION = "26 June 2017 [Beta2]";
 }
 
 //-----------------------------------------------------------------------------
 void Banner( std::ostream& ost)
 {
-   ost                                                    << std::endl;
-   ost << "--------------------------------------------"  << std::endl;
-   ost << "Webinan (" << VERSION << ")"                   << std::endl;
-   ost                                                    << std::endl;
-   ost << "R. Barnes, University of Minnesota          "  << std::endl;
-   ost << "R. Soule,  Minnesota Department of Health   "  << std::endl;
-   ost << "--------------------------------------------"  << std::endl;
+   ost <<
+      "-------------------------------------------- \n"
+      "Webinan (" << VERSION << ") \n"
+      "\n"
+      "R. Barnes, University of Minnesota \n"
+      "R. Soule,  Minnesota Department of Health \n"
+      "-------------------------------------------- \n"
+   << std::endl;
 }
 
 //-----------------------------------------------------------------------------
 void Help()
 {
    Version();
-   std::cout << "   Identify potential outliers using a geostatistical framework."              << std::endl;
-   std::cout << std::endl;
-   std::cout << "   Webinan is a simple, pragmatic, heuristic algorithm. One-by-one we "        << std::endl;
-   std::cout << "   visit each observation. We temporarily remove this observation from "       << std::endl;
-   std::cout << "   the data set. We also temporarily remove all of the observations in "       << std::endl;
-   std::cout << "   the immediate vicinity of this observation. With this reduced data "        << std::endl;
-   std::cout << "   set we interpolate the value at this observation location using "           << std::endl;
-   std::cout << "   Ordinary Kriging. "                                                         << std::endl;
-   std::cout << std::endl;
-   std::cout << "   We compare the interpolated value with the observed value. If they "        << std::endl;
-   std::cout << "   are significantly different, the observation is a potential outlier. "      << std::endl;
-   std::cout << std::endl;
+
+   std::cout <<
+      "   Identify potential outliers using a geostatistical framework. \n"
+   << std::endl;
+
+   std::cout <<
+      "   Webinan is a simple, pragmatic, heuristic algorithm. One-by-one we \n"
+      "   visit each observation. We temporarily remove this observation from \n"
+      "   the data set. We also temporarily remove all of the observations in \n"
+      "   the immediate vicinity of this observation. With this reduced data \n"
+      "   set we interpolate the value at this observation location using \n"
+      "   Ordinary Kriging. \n"
+      "\n"
+      "   We compare the interpolated value with the observed value. If they \n"
+      "   are significantly different, the observation is a potential outlier. \n"
+   << std::endl;
 
    Usage();
-   std::cout << "Arguments:" << std::endl;
-   std::cout << "   <nugget>        The <nugget>, or 'nugget effect', is the discontinuity "    << std::endl;
-   std::cout << "                   in the variogram at a lag of 0. The <nugget> quantifies "   << std::endl;
-   std::cout << "                   the variance of the sampling and measurement errors and "   << std::endl;
-   std::cout << "                   the hyper-local spatial variation. The units of the "       << std::endl;
-   std::cout << "                   <nugget> are the units of the observed values squared. "    << std::endl;
-   std::cout << "                   The <nugget> must be a strictly positive value. "           << std::endl;
-   std::cout << std::endl;
-   std::cout << "   <sill>          The <sill> is the value (height) at which variogram "       << std::endl;
-   std::cout << "                   levels out. With the exponential model used in Webinan, "   << std::endl;
-   std::cout << "                   the variogram approaches the <sill> asymptotically. "       << std::endl;
-   std::cout << "                   In the common geostatistical framework (i.e. a second "     << std::endl;
-   std::cout << "                   order stationary model), the sill equals the variance "     << std::endl;
-   std::cout << "                   of the underlying population. The units of the <sill>"      << std::endl;
-   std::cout << "                   are the units of the observed values squared. The <sill>"   << std::endl;
-   std::cout << "                   must be a strictly positive value. "                        << std::endl;
-   std::cout << std::endl;
-   std::cout << "   <range>         The <range> is the separation distance at which we "        << std::endl;
-   std::cout << "                   model two observations as essentially uncorrelated. "       << std::endl;
-   std::cout << "                   With the exponential model used in Webinan, this is "       << std::endl;
-   std::cout << "                   the separation distance at which the variogram reaches "    << std::endl;
-   std::cout << "                   95% of the <sill>. The units of the <range> are the "       << std::endl;
-   std::cout << "                   units of the observations locations. The <range> must "     << std::endl;
-   std::cout << "                   be a strictly positive value. "                             << std::endl;
-   std::cout << std::endl;
-   std::cout << "   <radius>        The <radius> is the radius of the circle defining the "     << std::endl;
-   std::cout << "                   'immediate vicinity' of each observation. When we "         << std::endl;
-   std::cout << "                   interpolate the value at an observation location we "       << std::endl;
-   std::cout << "                   exclude all of the observations that fall within a "        << std::endl;
-   std::cout << "                   circle centered on the observation location with a "        << std::endl;
-   std::cout << "                   radius equal to <radius>. The units of the <radius> are "   << std::endl;
-   std::cout << "                   the units of the observations locations. The <radius> "     << std::endl;
-   std::cout << "                   must be a non-negative value. "                             << std::endl;
-   std::cout << std::endl;
-   std::cout << "   <input file>    The <input file> is the name of the file (including any "   << std::endl;
-   std::cout << "                   necessary path information and the .csv file extension) "   << std::endl;
-   std::cout << "                   containing the observation data. (See below.)"              << std::endl;
-   std::cout << std::endl;
-   std::cout << "   <output file>   The <output file> is the name of the file (including "      << std::endl;
-   std::cout << "                   any necessary path information and the file extension) "    << std::endl;
-   std::cout << "                   where Webinan will write all of the program results. "      << std::endl;
-   std::cout << "                   If the specified <output file> already exists, it will "    << std::endl;
-   std::cout << "                   be overwritten. (See below.) "                              << std::endl;
-   std::cout << std::endl;
 
-   std::cout << "Example:" << std::endl;
-   std::cout << "   Webinan 3 25 3500 50 .\\data\\Input.csv Output.csv" << std::endl;
-   std::cout << std::endl;
+   std::cout <<
+      "Arguments: \n"
+      "   <nugget>        The <nugget>, or 'nugget effect', is the discontinuity \n"
+      "                   in the variogram at a lag of 0. The <nugget> quantifies \n"
+      "                   the variance of the sampling and measurement errors and \n"
+      "                   the hyper-local spatial variation. The units of the \n"
+      "                   <nugget> are the units of the observed values squared. \n"
+      "                   The <nugget> must be a strictly positive value. \n"
+      "\n"
+      "   <sill>          The <sill> is the value (height) at which variogram \n"
+      "                   levels out. With the exponential model used in Webinan, \n"
+      "                   the variogram approaches the <sill> asymptotically. \n"
+      "                   In the common geostatistical framework (i.e. a second \n"
+      "                   order stationary model), the sill equals the variance \n"
+      "                   of the underlying population. The units of the <sill> \n"
+      "                   are the units of the observed values squared. The <sill> \n"
+      "                   must be a strictly positive value. \n"
+      "\n"
+      "   <range>         The <range> is the separation distance at which we \n"
+      "                   model two observations as essentially uncorrelated. \n"
+      "                   With the exponential model used in Webinan, this is \n"
+      "                   the separation distance at which the variogram reaches \n"
+      "                   95% of the <sill>. The units of the <range> are the \n"
+      "                   units of the observations locations. The <range> must \n"
+      "                   be a strictly positive value. \n"
+      "\n"
+      "   <radius>        The <radius> is the radius of the circle defining the \n"
+      "                   'immediate vicinity' of each observation. When we \n"
+      "                   interpolate the value at an observation location we \n"
+      "                   exclude all of the observations that fall within a \n"
+      "                   circle centered on the observation location with a \n"
+      "                   radius equal to <radius>. The units of the <radius> are \n"
+      "                   the units of the observations locations. The <radius> \n"
+      "                   must be a non-negative value. \n"
+      "\n"
+      "   <obs filename>  The <obs filename> is the name of the file (including any \n"
+      "                   necessary path information and the .csv file extension) \n"
+      "                   containing the observation data. \n"
+      "\n"
+      "   <out filename>  The <out filename> is the name of the file (including \n"
+      "                   any necessary path information and the file extension) \n"
+      "                   where Webinan will write all of the program results. \n"
+      "                   If the specified <output file> already exists, it will \n"
+      "                   be overwritten. (See below.) \n"
+   << std::endl;
 
-   std::cout << "Input:" << std::endl;
-   std::cout << "   All of the observation data are supplied to Webinan by the <input file>."  << std::endl;
-   std::cout << "   The <input file> must be a valid .csv format, using a single comma as "     << std::endl;
-   std::cout << "   the field delimiter."                                                       << std::endl;
-   std::cout << std::endl;
-   std::cout << "   The <input file> contains NO header lines. The <input file> may include "   << std::endl;
-   std::cout << "   blank lines. The <input file> may include comment lines. Comment lines "    << std::endl;
-   std::cout << "   are identified by an octothorpe (#) or an exclamation mark (!) in the "     << std::endl;
-   std::cout << "   first column of the line."                                                  << std::endl;
-   std::cout << std::endl;
-   std::cout << "   The <input file> contains one line for each observation. Each observation " << std::endl;
-   std::cout << "   line has four fields. "                                                     << std::endl;
-   std::cout << std::endl;
-   std::cout << "   <ID>            The specified observation unique identification string."    << std::endl;
-   std::cout << "                   The ID string can contain numbers, letters, underscores, "  << std::endl;
-   std::cout << "                   and internal spaces. The ID may NOT contain commas."        << std::endl;
-   std::cout << std::endl;
-   std::cout << "   <X>             The specified observation location x-coordinate. The <X>"   << std::endl;
-   std::cout << "                   must be a valid floating point number."                     << std::endl;
-   std::cout << std::endl;
-   std::cout << "   <Y>             The specified observation location y-coordinate. The <Y>"   << std::endl;
-   std::cout << "                   must be a valid floating point number."                     << std::endl;
-   std::cout << std::endl;
-   std::cout << "   <Z>             The specified observation value a location (X,Y). The <Z>"  << std::endl;
-   std::cout << "                   must be a valid floating point number."                     << std::endl;
-   std::cout << std::endl;
-   std::cout << "   The four fields must delimited by a single comma, or a single comma and "   << std::endl;
-   std::cout << "   one or more spaces. Spaces and tabs are the start and end of fields are "   << std::endl;
-   std::cout << "   trimmed. "                                                                  << std::endl;
-   std::cout << std::endl;
+   std::cout <<
+      "Example: \n"
+      "   Webinan 3 25 3500 50 input.csv output.csv \n"
+   << std::endl;
 
-   std::cout << "Output:" << std::endl;
-   std::cout << "   All of the program results go to the <output file>. The <output file> "     << std::endl;
-   std::cout << "   is written in a valid .csv format, using a single comma as the field "      << std::endl;
-   std::cout << "   the field delimiter."                                                       << std::endl;
-   std::cout << std::endl;
-   std::cout << "   The <output file> contains one standard header line. Following the header " << std::endl;
-   std::cout << "   lines there is one line for each observation in the <input file>. Each "    << std::endl;
-   std::cout << "   observation line has nine fields. "                                         << std::endl;
-   std::cout << std::endl;
-   std::cout << "   <ID>            The specified observation identification string as "        << std::endl;
-   std::cout << "                   given in the <input file>."                                 << std::endl;
-   std::cout << std::endl;
-   std::cout << "   <X>             The specified observation location x-coordinate as "        << std::endl;
-   std::cout << "                   given in the <input file>."                                 << std::endl;
-   std::cout << std::endl;
-   std::cout << "   <Y>             The specified observation location y-coordinate as "        << std::endl;
-   std::cout << "                   given in the <input file>."                                 << std::endl;
-   std::cout << std::endl;
-   std::cout << "   <Z>             The specified observation value at location (X,Y) as "      << std::endl;
-   std::cout << "                   given in the <input file>."                                 << std::endl;
-   std::cout << std::endl;
-   std::cout << "   <Count>         The number of observations used in the interpolation."      << std::endl;
-   std::cout << "                   The <Count> is the number of observations remaining "       << std::endl;
-   std::cout << "                   after excluding the observations within the immediate "     << std::endl;
-   std::cout << "                   vicinity of the observation location. "                     << std::endl;
-   std::cout << std::endl;
-   std::cout << "   <Zhat>          The interpolated value at the observation location."        << std::endl;
-   std::cout << std::endl;
-   std::cout << "   <Kstd>          The 'standard error' of the interpolated value at the "     << std::endl;
-   std::cout <<"                    observation location. The <Kstd> is the square root "       << std::endl;
-   std::cout <<"                    Ordinary Kriging variance."                                 << std::endl;
-   std::cout << std::endl;
-   std::cout << "   <Zeta>          The <Zeta> is the normalized interpolation error. "         << std::endl;
-   std::cout << "                      <Zeta> = (<Z> - <Zhat>)/<Kstd>."                         << std::endl;
-   std::cout << std::endl;
-   std::cout << "   <pValue>        A small <pValue> indicates a potential outlier; e.g. "      << std::endl;
-   std::cout << "                   a <pValue> less than 0.01. The <pValue> is defined as "     << std::endl;
-   std::cout << "                   the probability that a standard normal random variable "    << std::endl;
-   std::cout << "                   is more extreme than <Zeta>. "                              << std::endl;
-   std::cout << "                     if <Zeta> < 0 then "                                      << std::endl;
-   std::cout << "                        <pValue> = Pr( standard normal < <Zeta> ) "            << std::endl;
-   std::cout << "                     else if <Zeta> > 0 then "                                 << std::endl;
-   std::cout << "                        <pValue> = Pr( standard normal > <Zeta> ) "            << std::endl;
-   std::cout << std::endl;
+   std::cout <<
+      "Observation File: \n"
+      "   All of the observation head data are supplied by this .csv file. \n"
+      "\n"
+      "   The observation file contains no header line. The observation file may \n"
+      "   include blank lines, which are ignored. The observation may include \n"
+      "   comment lines, which are identified by an octothorpe (#) in the first \n"
+      "   column of the line. \n"
+      "\n"
+      "   The observation file contains one line for each head observation. Each \n"
+      "   line in the observation file has four fields. \n"
+      "\n"
+      "   <ID>            The observation identification string. The ID string can \n"
+      "                   contain numbers, letters, underscores, and internal spaces. \n"
+      "                   The ID may not contain commas. \n"
+      "\n"
+      "   <x>             The x-coordinate [L] of observation location. \n"
+      "\n"
+      "   <y>             The y-coordinate [L] of observation location. \n"
+      "\n"
+      "   <z>             The observation value. at location (x,y). \n"
+      "\n"
+      "   Each of the four fields must separated by a single comma. Spaces and tabs \n"
+      "   at the start and end of fields are trimmed. \n"
+   << std::endl;
 
-   std::cout << "Notes:" << std::endl;
-   std::cout << "   o  An exponential semivariogram model is used. "                            << std::endl;
-   std::cout << "         gamma(h) = <nugget> + (<sill>-<nugget>)*(1 - exp(-3h/<range>)) "      << std::endl;
-   std::cout << std::endl;
-   std::cout << "   o  The set of observations may include 'duplicates', i.e. multiple "        << std::endl;
-   std::cout << "      observation values at the same location. "                               << std::endl;
-   std::cout << std::endl;
-   std::cout << "   o  The project name 'Webinan' is the Ojibwe word for the inanimate "        << std::endl;
-   std::cout << "      transitive verb 'throw it away'. See [http://ojibwe.lib.umn.edu]. "      << std::endl;
-   std::cout << "      This name seems appropriate for a program used to identify potential "   << std::endl;
-   std::cout << "      outliers."                                                               << std::endl;
-   std::cout << std::endl;
+   std::cout <<
+      "Output File: \n"
+      "   All of the program results are written to the output .csv file. \n"
+      "\n"
+      "   The output file contains one header line with nine comma separated \n"
+      "   text fields containing the field titles. \n"
+      "\n"
+      "   The rest of the output file comprises one line for each observation. \n"
+      "   Each line has nine fields. \n"
+      "\n"
+      "   <ID>            The observation identification string. \n"
+      "\n"
+      "   <X>             The x-coordinate for the location of the observation. \n"
+      "\n"
+      "   <Y>             The y-coordinate for the location of the observation. \n"
+      "\n"
+      "   <Z>             The observed value at location (X,Y). \n"
+      "\n"
+      "   <Count>         The number of observations used in the interpolation. \n"
+      "                   The <Count> is the number of observations remaining \n"
+      "                   after excluding the observations within the immediate \n"
+      "                   vicinity of the observation location. \n"
+      "\n"
+      "   <Zhat>          The interpolated value at the observation location. \n"
+      "\n"
+      "   <Kstd>          The 'standard error' of the interpolated value at the \n"
+      "                   observation location. The <Kstd> is the square root \n"
+      "                   Ordinary Kriging variance. \n"
+      "\n"
+      "   <Zeta>          The normalized interpolation error. \n"
+      "                      <Zeta> = (<Z> - <Zhat>)/<Kstd>. \n"
+      "\n"
+      "   <pValue>        A small <pValue> indicates a potential outlier; e.g. \n"
+      "                   a <pValue> less than 0.01. The <pValue> is defined as \n"
+      "                   the probability that a standard normal random variable \n"
+      "                   is more extreme than <Zeta>. \n"
+      "                     if <Zeta> < 0 then \n"
+      "                        <pValue> = Pr( standard normal < <Zeta> ) \n"
+      "                     else if <Zeta> > 0 then \n"
+      "                        <pValue> = Pr( standard normal > <Zeta> ) \n"
+   << std::endl;
 
-   std::cout << "Authors:" << std::endl;
-   std::cout << "   R. Barnes, University of Minnesota          "  << std::endl;
-   std::cout << "   R. Soule,  Minnesota Department of Health   "  << std::endl;
-   std::cout << std::endl;
+   std::cout <<
+      "Notes: \n"
+      "   o  An exponential semivariogram model is used. \n"
+      "         gamma(h) = <nugget> + (<sill>-<nugget>)*(1 - exp(-3h/<range>)) \n"
+      "\n"
+      "   o  The set of observations may include 'duplicates', i.e. multiple \n"
+      "      observation values at the same location. \n"
+      "\n"
+      "   o  The project name 'Webinan' is the Ojibwe word for the inanimate \n"
+      "      transitive verb 'throw it away'. See [http://ojibwe.lib.umn.edu]. \n"
+      "      This name seems appropriate for a program used to identify potential \n"
+      "      outliers. \n"
+   << std::endl;
+
+   std::cout <<
+      "Authors: \n"
+      "   R. Barnes, University of Minnesota \n"
+      "   R. Soule,  Minnesota Department of Health \n"
+   << std::endl;
 }
 
 //-----------------------------------------------------------------------------
 void Usage()
 {
-   std::cout << "Usage:" << std::endl;
-   std::cout << "   Webinan <nugget> <sill> <range> <radius> <input file> <output file>" << std::endl;
-   std::cout << "   Webinan --help" << std::endl;
-   std::cout << "   Webinan --version" << std::endl;
-   std::cout << std::endl;
+   std::cout <<
+      "Usage: \n"
+      "   Webinan <nugget> <sill> <range> <radius> <input file> <output file> \n"
+      "   Webinan --help \n"
+      "   Webinan --version \n"
+   << std::endl;
 }
 
 //-----------------------------------------------------------------------------

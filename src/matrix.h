@@ -7,7 +7,7 @@
 //    University of Minnesota
 //
 // version:
-//    26 June 2017
+//    2 July 2017
 //=============================================================================
 #ifndef MATRIX_H
 #define MATRIX_H
@@ -101,6 +101,7 @@ void Identity( Matrix& A, int n );                                   // A = I(n)
 // Slice Matrix operations.
 //=============================================================================
 void Slice( const Matrix& A, const std::vector<int>& row_flag, const std::vector<int>& col_flag, Matrix& C );
+void SliceRows( const Matrix& A, const std::vector<int>& row_flag, Matrix& C );
 
 //=============================================================================
 // scalar/Matrix arithmetic routines.
@@ -137,6 +138,7 @@ double QuadraticForm_MMM ( const Matrix& a, const Matrix& B, const Matrix& c ); 
 //=============================================================================
 // Matrix comparison
 //=============================================================================
+bool isSquare(const Matrix& A);
 bool isCongruent( const Matrix& A, const Matrix& B );
 bool isClose( const Matrix& A, const Matrix& B, double tol );
 

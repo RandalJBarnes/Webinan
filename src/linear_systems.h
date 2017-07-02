@@ -7,7 +7,7 @@
 //    University of Minnesota
 //
 // version:
-//    26 June 2017
+//    29 June 2017
 //=============================================================================
 #ifndef LINEAR_SYSTEMS_H
 #define LINEAR_SYSTEMS_H
@@ -20,6 +20,7 @@
 //=============================================================================
 bool CholeskyDecomposition( const Matrix& A, Matrix& L );
 void CholeskySolve( const Matrix& L, const Matrix& b, Matrix& x );
+void CholeskyInverse( const Matrix& L, Matrix& Ainv );
 
 bool RSPDInv( const Matrix& A, Matrix& Ainv );
 bool LeastSquaresSolve( const Matrix& A, const Matrix& B, Matrix& X );

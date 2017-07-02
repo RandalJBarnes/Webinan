@@ -14,7 +14,7 @@
 //    University of Minnesota
 //
 // version:
-//    26 June 2017
+//    29 June 2017
 //=============================================================================
 #include "linear_systems.h"
 
@@ -62,7 +62,7 @@ namespace{
 bool CholeskyDecomposition( const Matrix& A, Matrix& L )
 {
    // Validate the arguments.
-   assert( A.nRows() == A.nCols() );
+   assert(isSquare(A));
 
    // Define local constants.
    const int N = A.nRows();
@@ -70,8 +70,7 @@ bool CholeskyDecomposition( const Matrix& A, Matrix& L )
    // Carry out the Cholesky decomposition on Matrix "A".
    L = A;
    for (int j = 0; j < N; ++j) {
-      if (j > 0)
-      {
+      if (j > 0) {
          for (int k = j; k < N; ++k)
             L(k,j) -= SumProduct(j, L.Base(j,0), L.Base(k,0));
       }
@@ -84,10 +83,8 @@ bool CholeskyDecomposition( const Matrix& A, Matrix& L )
          L(j,k) = 0.0;
       }
    }
-
    return true;
 }
-
 
 //=============================================================================
 // CholeskySolve
@@ -156,6 +153,45 @@ void CholeskySolve( const Matrix& L, const Matrix& b, Matrix& x )
    }
 }
 
+//=============================================================================
+// CholeskyInverse
+//
+//    Return the inverse of a real, symmetric, positive definite Matrix A
+//    whose Cholesky decomposition is given by L.
+//
+// Arguments:
+//    L     on entrance, the Cholesky decomposition of a real, symmetric,
+//          positive definite Matrix.
+//
+//    Ainv  on exit, the inverse of A.
+//
+// Notes:
+// o  The computation of the inverse is based upon the standard Cholesky
+//    decompostion.
+//
+// References:
+// o  Stewart, G., 1998, "Matrix Algorithms - Volume I: Basic Decompositions",
+//    SIAM, Philadelphia, 458pp., ISBN 0-89871-414-1.
+//=============================================================================
+void CholeskyInverse( const Matrix& L, Matrix& Ainv ) 
+{
+   assert( L.nRows() > 0 );
+   assert( L.nRows() == L.nCols() );
+   const int N = L.nRows();
+
+   Matrix LL(L);
+
+   // Invert L in place; remember that L is lower triangular.
+   for (int k = 0; k < N; ++k) {
+      LL(k,k) = 1.0/LL(k,k);
+
+      for (int i = 0; i < k; ++i)
+         LL(k,i) = -LL(k,k) * SumProduct( k-i, LL.Base(i,i), N, LL.Base(k,i) );
+   }
+
+   // A = L L' --> Ainv = (L')~ L~ = (L~)' L~
+   Multiply_MtM( LL, LL, Ainv );
+}
 
 //=============================================================================
 // RSPDInv
@@ -185,8 +221,7 @@ void CholeskySolve( const Matrix& L, const Matrix& b, Matrix& x )
 //=============================================================================
 bool RSPDInv( const Matrix& A, Matrix& Ainv )
 {
-   assert( A.nRows() > 0 );
-   assert( A.nRows() == A.nCols() );
+   assert(isSquare(A));
    const int N = A.nRows();
 
    // Compute the Cholesky decomposition of "A", putting the result in "L".
@@ -315,15 +350,13 @@ bool LeastSquaresSolve( const Matrix& A, const Matrix& B, Matrix& X )
       for (int i = 0; i < M; ++i)
          AA(i,k) /= R(k,k);
 
-      for (int j = k+1; j < N; ++j)
-      {
+      for (int j = k+1; j < N; ++j) {
          R(k,j) = SumProduct(M, AA.Base(0,k), AA.nCols(), AA.Base(0,j), AA.nCols());
          for (int i = 0; i < M; ++i)
             AA(i,j) -= AA(i,k)*R(k,j);
       }
 
-      for (int p = 0; p < P; ++p)
-      {
+      for (int p = 0; p < P; ++p) {
          X(k,p) = SumProduct(M, AA.Base(0,k), AA.nCols(), BB.Base(0,p), BB.nCols());
          for (int i = 0; i < M; ++i)
             BB(i,p) -= AA(i,k)*X(k,p);
@@ -343,7 +376,6 @@ bool LeastSquaresSolve( const Matrix& A, const Matrix& B, Matrix& X )
       for (int p = 0; p < P; ++p)
          X(i,p) = (X(i,p) - SumProduct(N-i-1, R.Base(i,i+1), X.Base(i+1,p), X.nCols())) / R(i,i);
    }
-
    return true;
 }
 
@@ -375,10 +407,8 @@ void AffineTransformation( const Matrix& A, const Matrix& B, const Matrix& C, Ma
    Matrix DD;
    Multiply_MM(A,B,DD);
 
-   for (int i = 0; i < DD.nRows(); ++i)
-   {
-      for (int j = 0; j < DD.nCols(); ++j)
-      {
+   for (int i = 0; i < DD.nRows(); ++i) {
+      for (int j = 0; j < DD.nCols(); ++j) {
          DD(i,j) += C(0,j);
       }
    }
